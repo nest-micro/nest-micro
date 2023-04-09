@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "references": [
+    { "path": "./packages/common/tsconfig.build.json" },
+    { "path": "./packages/config/tsconfig.build.json" },
+    { "path": "./packages/config-nacos/tsconfig.build.json" },
+    { "path": "./packages/discovery/tsconfig.build.json" },
+    { "path": "./packages/discovery-nacos/tsconfig.build.json" },
+    { "path": "./packages/loadbalance/tsconfig.build.json" }
+  ],
+  "files": []
+}

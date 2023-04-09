@@ -1,0 +1,16 @@
+{
+  "name": "@nest-micro/config",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "haiweilian <haiweilian@foxmail.com>",
+  "homepage": "https://github.com/nest-micro/nest-micro",
+  "main": "./lib/index.js",
+  "dependencies": {
+    "handlebars": "^4.7.7",
+    "lodash": "^4.17.21",
+    "yaml": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.191"
+  }
+}

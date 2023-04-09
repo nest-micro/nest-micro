@@ -1,0 +1,8 @@
+{
+  "name": "@nest-micro/common",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "haiweilian <haiweilian@foxmail.com>",
+  "homepage": "https://github.com/nest-micro/nest-micro",
+  "main": "./lib/index.js"
+}

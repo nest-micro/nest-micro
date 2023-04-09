@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  nest-micro-nacos:
+    container_name: nest-micro-nacos
+    image: nacos/nacos-server:v2.2.0
+    env_file:
+      - ./nacos/conf/nacos.env
+    volumes:
+      - ./nacos/logs/:/home/nacos/logs
+    ports:
+      - '8848:8848'
+      - '9848:9848'
+      - '9555:9555'
+    depends_on:
+      - nest-micro-mysql
+  nest-micro-mysql:
+    container_name: nest-micro-mysql
+    image: mysql
+    env_file:
+      - ./mysql/conf/mysql.env
+    volumes:
+      - ./mysql/logs:/logs
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+    ports:
+      - '3306:3306'
+    command:
+      [
+        'mysqld',
+        '--innodb-buffer-pool-size=80M',
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+        '--default-time-zone=+8:00',
+        '--lower-case-table-names=1',
+      ]
