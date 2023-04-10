@@ -1,3 +1,3 @@
-export * from './nacos.module'
-export * from './nacos.service'
-export * from './nacos.interface'
+export * from './config-nacos'
+export * from './config-nacos.module'
+export * from './config-nacos.interface'

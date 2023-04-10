@@ -11,6 +11,7 @@ import { AppService } from './app.service'
     DiscoveryModule.forRoot(),
     DiscoveryNacosModule.forRoot(),
     // DiscoveryNacosModule.forRoot({
+    //   // logger: false,
     //   client: {
     //     serverList: '127.0.0.1:8848',
     //     namespace: '5f8d158f-c2b0-4d12-bc8b-03496d993dfb',

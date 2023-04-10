@@ -13,6 +13,7 @@ importers:
       '@nest-micro/config-nacos': workspace:*
       '@nest-micro/discovery': workspace:*
       '@nest-micro/discovery-nacos': workspace:*
+      '@nest-micro/loadbalance': workspace:*
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -37,6 +38,7 @@ importers:
       '@nest-micro/config-nacos': link:packages/config-nacos
       '@nest-micro/discovery': link:packages/discovery
       '@nest-micro/discovery-nacos': link:packages/discovery-nacos
+      '@nest-micro/loadbalance': link:packages/loadbalance
       '@nestjs/common': 9.4.0_mnr6j2del53muneqly5h4y27ai
       '@nestjs/core': 9.4.0_qfvkcqqlilywzuwwu2xqitbr3m
       '@nestjs/platform-express': 9.4.0_gqkob5jndcfeb3wjw72wbdwyne
@@ -66,47 +68,33 @@ importers:
 
   packages/config:
     specifiers:
-      '@types/lodash': ^4.14.191
       handlebars: ^4.7.7
-      lodash: ^4.17.21
       yaml: ^2.2.1
     dependencies:
       handlebars: 4.7.7
-      lodash: 4.17.21
       yaml: 2.2.1
-    devDependencies:
-      '@types/lodash': 4.14.192
 
   packages/config-nacos:
     specifiers:
-      '@types/lodash': ^4.14.191
-      handlebars: ^4.7.7
-      lodash: ^4.17.21
       nacos: ^2.5.1
       yaml: ^2.2.1
     dependencies:
-      handlebars: 4.7.7
-      lodash: 4.17.21
       nacos: 2.5.1
       yaml: 2.2.1
-    devDependencies:
-      '@types/lodash': 4.14.192
 
   packages/discovery:
     specifiers: {}
 
   packages/discovery-nacos:
     specifiers:
-      '@types/lodash': ^4.14.191
       address: ^1.2.2
-      lodash: ^4.17.21
       nacos: ^2.5.1
     dependencies:
       address: 1.2.2
-      lodash: 4.17.21
       nacos: 2.5.1
-    devDependencies:
-      '@types/lodash': 4.14.192
+
+  packages/loadbalance:
+    specifiers: {}
 
   samples/config:
     specifiers:
@@ -151,6 +139,20 @@ importers:
       rxjs: 7.8.0
 
   samples/discovery-nacos:
+    specifiers:
+      '@nestjs/common': ^9.0.0
+      '@nestjs/core': ^9.0.0
+      '@nestjs/platform-express': ^9.0.0
+      reflect-metadata: ^0.1.13
+      rxjs: ^7.2.0
+    dependencies:
+      '@nestjs/common': 9.4.0_mnr6j2del53muneqly5h4y27ai
+      '@nestjs/core': 9.4.0_qfvkcqqlilywzuwwu2xqitbr3m
+      '@nestjs/platform-express': 9.4.0_gqkob5jndcfeb3wjw72wbdwyne
+      reflect-metadata: 0.1.13
+      rxjs: 7.8.0
+
+  samples/loadbalance:
     specifiers:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0

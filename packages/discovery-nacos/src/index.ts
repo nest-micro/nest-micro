@@ -1,3 +1,3 @@
-export * from './nacos.module'
-export * from './nacos.service'
-export * from './nacos.interface'
+export * from './discovery-nacos'
+export * from './discovery-nacos.module'
+export * from './discovery-nacos.interface'

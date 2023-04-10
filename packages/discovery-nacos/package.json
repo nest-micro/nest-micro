@@ -7,10 +7,6 @@
   "main": "./lib/index.js",
   "dependencies": {
     "address": "^1.2.2",
-    "lodash": "^4.17.21",
     "nacos": "^2.5.1"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.191"
   }
 }

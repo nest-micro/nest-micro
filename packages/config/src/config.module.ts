@@ -1,9 +1,9 @@
 import { DynamicModule, Global, Module, Provider } from '@nestjs/common'
 import { CONFIG_OPTIONS } from './config.constants'
 import { ConfigOptions } from './config.interface'
+import { Config } from './config'
 import { ConfigStore } from './config.store'
 import { ConfigLoader } from './config.loader'
-import { ConfigService } from './config.service'
 
 @Global()
 @Module({})
@@ -16,8 +16,8 @@ export class ConfigModule {
 
     return {
       module: ConfigModule,
-      providers: [OptionsProvider, ConfigStore, ConfigLoader, ConfigService],
-      exports: [ConfigStore, ConfigService],
+      providers: [OptionsProvider, Config, ConfigStore, ConfigLoader],
+      exports: [Config, ConfigStore],
     }
   }
 }

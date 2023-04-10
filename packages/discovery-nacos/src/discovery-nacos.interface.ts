@@ -49,6 +49,7 @@ export interface NacosNamingSubscribeOptions {
 
 export interface DiscoveryNacosOptions {
   client: NacosNamingClientOptions
+  logger?: boolean
   instance?: NacosNamingInstanceOptions
   subscribes?: NacosNamingSubscribeOptions[]
 }

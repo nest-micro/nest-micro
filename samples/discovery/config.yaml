@@ -2,13 +2,17 @@ discovery:
   services:
     - name: app1
       servers:
-        - ip: 127.0.0.1
+        - id: 1#3000
+          ip: 127.0.0.1
           port: 3000
-        - ip: 127.0.0.1
+        - id: 1#4000
+          ip: 127.0.0.1
           port: 4000
     - name: app2
       servers:
-        - ip: 127.0.0.1
+        - id: 1#5000
+          ip: 127.0.0.1
           port: 5000
-        - ip: 127.0.0.1
+        - id: 1#6000
+          ip: 127.0.0.1
           port: 6000

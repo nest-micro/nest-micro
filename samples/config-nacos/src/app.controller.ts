@@ -1,10 +1,10 @@
 import { Controller, Get, Param } from '@nestjs/common'
-import { ConfigService } from '@nest-micro/config'
+import { Config } from '@nest-micro/config'
 import { AppService } from './app.service'
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly config: ConfigService) {}
+  constructor(private readonly appService: AppService, private readonly config: Config) {}
 
   @Get()
   getHello(): string {

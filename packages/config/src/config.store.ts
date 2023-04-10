@@ -28,7 +28,7 @@ export class ConfigStore {
 
   public set(path?: string, values?: any) {
     if (!path) {
-      this._data = values
+      return (this._data = values)
     }
     set(this._data, path, values)
   }

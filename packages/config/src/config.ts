@@ -3,7 +3,7 @@ import { ConfigStore } from './config.store'
 import { ConfigLoader } from './config.loader'
 
 @Injectable()
-export class ConfigService {
+export class Config {
   constructor(readonly store: ConfigStore, private readonly loader: ConfigLoader) {
     this.store.data = this.loader.load()
   }

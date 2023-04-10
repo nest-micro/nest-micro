@@ -1,13 +1,13 @@
 import { omit } from 'lodash'
 import { Injectable, Provider, OnModuleDestroy } from '@nestjs/common'
 import { ConfigStore } from '@nest-micro/config'
-import { CONFIG_NACOS_OPTIONS } from './nacos.constants'
-import { ConfigNacosOptions } from './nacos.interface'
-import { NacosClientFactory } from './nacos.factory'
+import { CONFIG_NACOS_OPTIONS } from './config-nacos.constants'
+import { ConfigNacosOptions } from './config-nacos.interface'
+import { NacosClientFactory } from './config-nacos.factory'
 
 @Injectable()
-export class ConfigNacosService {
-  private readonly store: ConfigStore
+export class ConfigNacos {
+  private readonly store!: ConfigStore
 
   get<T>(path?: string, defaults?: T): T {
     return this.store.get<T>(path, defaults)
@@ -15,7 +15,7 @@ export class ConfigNacosService {
 }
 
 @Injectable()
-class ConfigNacosServiceImpl implements OnModuleDestroy {
+class ConfigNacosImpl implements OnModuleDestroy {
   private readonly nacosClients: Array<NacosClientFactory> = []
 
   constructor(private readonly options: ConfigNacosOptions, private readonly store: ConfigStore) {}
@@ -48,13 +48,13 @@ class ConfigNacosServiceImpl implements OnModuleDestroy {
   }
 }
 
-export function createConfigNacosService(): Provider {
+export function createConfigNacos(): Provider {
   return {
-    provide: ConfigNacosService,
+    provide: ConfigNacos,
     useFactory: async (options: ConfigNacosOptions, store: ConfigStore) => {
-      const ConfigNacosService = new ConfigNacosServiceImpl(options, store)
-      await ConfigNacosService.init()
-      return ConfigNacosService
+      const configNacosImpl = new ConfigNacosImpl(options, store)
+      await configNacosImpl.init()
+      return configNacosImpl
     },
     inject: [CONFIG_NACOS_OPTIONS, ConfigStore],
   }

@@ -1,26 +1,15 @@
-import { Controller, Get, Param, OnModuleInit } from '@nestjs/common'
+import { Controller, Get, Param } from '@nestjs/common'
 import { Discovery } from '@nest-micro/discovery'
-import { DiscoveryNacos } from '@nest-micro/discovery-nacos'
+import { Loadbalance } from '@nest-micro/loadbalance'
 import { AppService } from './app.service'
 
 @Controller()
-export class AppController implements OnModuleInit {
+export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly discovery: Discovery,
-    private readonly discoveryNacos: DiscoveryNacos
+    private readonly loadbalance: Loadbalance
   ) {}
-
-  onModuleInit() {
-    this.discoveryNacos.registerInstance({
-      serviceName: 'discovery',
-      ip: '127.0.0.1',
-      port: 3000,
-      metadata: {
-        version: process.version,
-      },
-    })
-  }
 
   @Get()
   getHello(): string {
@@ -28,12 +17,12 @@ export class AppController implements OnModuleInit {
   }
 
   @Get('/getServices')
-  getServices() {
+  getConfig() {
     return this.discovery.getServices()
   }
 
   @Get('/getServiceNames')
-  getServiceNames() {
+  getConfigKey() {
     return this.discovery.getServiceNames()
   }
 
@@ -48,5 +37,10 @@ export class AppController implements OnModuleInit {
       { id: '1#7000', ip: '127.0.0.1', port: 7000 },
       { id: '1#8000', ip: '127.0.0.1', port: 8000 },
     ])
+  }
+
+  @Get('/chooseServer/:name')
+  chooseServer(@Param('name') name: string) {
+    return this.loadbalance.choose(name)
   }
 }

@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
-import { Logger, Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { mergeWith, isArray } from 'lodash'
 import { ConfigOptions } from './config.interface'
 import { CONFIG_OPTIONS } from './config.constants'
@@ -9,7 +9,6 @@ import { CONFIG_OPTIONS } from './config.constants'
 @Injectable()
 export class ConfigLoader {
   private readonly files: string[]
-  private readonly logger = new Logger(ConfigLoader.name)
 
   constructor(@Inject(CONFIG_OPTIONS) private readonly options: ConfigOptions) {
     this.files = this.getFilesPath()
@@ -18,12 +17,12 @@ export class ConfigLoader {
   public load(): any {
     this.checkFileExists()
 
-    const configs = []
+    const configs: any[] = []
     this.files.forEach((file) => {
       configs.push(this.loadFile(file))
     })
 
-    return mergeWith({}, ...configs, (objValue, srcValue) => {
+    return mergeWith({}, ...configs, (objValue: any, srcValue: any) => {
       if (isArray(objValue)) {
         return srcValue
       }
@@ -32,7 +31,7 @@ export class ConfigLoader {
 
   private checkFileExists() {
     if (this.files.length === 0) {
-      this.logger.warn(`file path was not found`)
+      throw new Error(`file path was not found`)
     }
 
     let existFiles = 0
@@ -42,7 +41,7 @@ export class ConfigLoader {
       }
     }
     if (existFiles === 0) {
-      this.logger.warn(`file path was not found`)
+      throw new Error(`file path was not found`)
     }
   }
 
@@ -51,7 +50,6 @@ export class ConfigLoader {
     if (!fs.existsSync(path)) {
       return config
     }
-    this.logger.log(`load config ${path}`)
     const configStr = fs.readFileSync(path).toString()
     try {
       config = YAML.parse(configStr)
@@ -59,7 +57,7 @@ export class ConfigLoader {
       try {
         config = JSON.parse(configStr)
       } catch (e) {
-        this.logger.warn(`file ${path} parse error`)
+        throw new Error(`file ${path} parse error`)
       }
     }
     return config

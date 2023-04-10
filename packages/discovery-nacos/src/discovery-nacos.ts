@@ -1,27 +1,27 @@
 import { ip } from 'address'
 import { NacosNamingClient } from 'nacos'
-import { Logger, Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
-import { DiscoveryService } from '@nest-micro/discovery'
-import { DISCOVERY_NACOS_OPTIONS } from './nacos.constants'
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
+import { Discovery } from '@nest-micro/discovery'
+import { DISCOVERY_NACOS_OPTIONS } from './discovery-nacos.constants'
+import { NoopLogger } from './discovery-nacos.logger'
 import {
   DiscoveryNacosOptions,
   NacosNamingInstance,
   NacosNamingInstanceOptions,
   NacosNamingSubscribeOptions,
-} from './nacos.interface'
+} from './discovery-nacos.interface'
 
 @Injectable()
-export class DiscoveryNacosService implements OnModuleInit, OnModuleDestroy {
+export class DiscoveryNacos implements OnModuleInit, OnModuleDestroy {
   private namingClient: any
-  private readonly logger = new Logger(DiscoveryNacosService.name)
 
   constructor(
     @Inject(DISCOVERY_NACOS_OPTIONS) private readonly options: DiscoveryNacosOptions,
-    private readonly discoveryService: DiscoveryService
+    private readonly discovery: Discovery
   ) {
     this.namingClient = new NacosNamingClient({
       ...this.options.client,
-      logger: console,
+      logger: this.options.logger !== false ? console : (NoopLogger as unknown as Console),
     })
   }
 
@@ -35,40 +35,19 @@ export class DiscoveryNacosService implements OnModuleInit, OnModuleDestroy {
     await this.namingClient.close()
   }
 
-  private async initInstances() {
-    if (!this.options.instance) return null
-    await this.registerInstance({
-      ip: ip(),
-      ...this.options.instance,
-    })
-  }
-
-  private async initSubscribes() {
-    if (!this.options.subscribes) return null
-    for (const subscribe of this.options.subscribes) {
-      this.subscribe(subscribe, (instances: NacosNamingInstance[]) => {
-        this.discoveryService.setService(subscribe.serviceName, instances)
-      })
-    }
-  }
-
   subscribe(subscribe: string | NacosNamingSubscribeOptions, listener: (instances: NacosNamingInstance[]) => void) {
-    this.logger.log(`subscribe ${typeof subscribe === 'string' ? subscribe : subscribe.serviceName}`)
     return this.namingClient.subscribe(subscribe, listener)
   }
 
   unSubscribe(subscribe: string | NacosNamingSubscribeOptions, listener: (instances: NacosNamingInstance[]) => void) {
-    this.logger.log(`unSubscribe ${typeof subscribe === 'string' ? subscribe : subscribe.serviceName}`)
     return this.namingClient.unSubscribe(subscribe, listener)
   }
 
   registerInstance(instance: NacosNamingInstanceOptions) {
-    this.logger.log(`registerInstance ${instance.serviceName}-${instance.ip}:${instance.port}`)
     return this.namingClient.registerInstance(instance.serviceName, instance, instance.groupName) as Promise<void>
   }
 
   deregisterInstance(instance: NacosNamingInstanceOptions) {
-    this.logger.log(`deregisterInstance ${instance.serviceName}-${instance.ip}:${instance.port}`)
     return this.namingClient.deregisterInstance(instance.serviceName, instance, instance.groupName) as Promise<void>
   }
 
@@ -86,5 +65,34 @@ export class DiscoveryNacosService implements OnModuleInit, OnModuleDestroy {
 
   getServerStatus() {
     return this.namingClient.getServerStatus() as Promise<'UP' | 'DOWN'>
+  }
+
+  private async initInstances() {
+    if (!this.options.instance) return null
+    await this.registerInstance({
+      // @ts-expect-error
+      ip: ip(),
+      ...this.options.instance,
+    })
+  }
+
+  private async initSubscribes() {
+    if (!this.options.subscribes) return null
+    for (const subscribe of this.options.subscribes) {
+      this.subscribe(subscribe, (instances: NacosNamingInstance[]) => {
+        this.setDiscoveryService(subscribe.serviceName, instances)
+      })
+    }
+  }
+
+  private async setDiscoveryService(name: string, instances: NacosNamingInstance[]) {
+    this.discovery.setServiceServers(
+      name,
+      instances.map((instance) => ({
+        ...instance,
+        id: instance.instanceId,
+        status: instance.healthy && instance.enabled,
+      }))
+    )
   }
 }

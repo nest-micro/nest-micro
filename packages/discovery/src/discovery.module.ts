@@ -1,7 +1,7 @@
 import { Module, DynamicModule, Global } from '@nestjs/common'
 import { DiscoveryOptions, DiscoveryAsyncOptions } from './discovery.interface'
 import { createOptionsProvider, createAsyncOptionsProvider, createAssignOptionsProvider } from './discovery.provider'
-import { DiscoveryService } from './discovery.service'
+import { Discovery } from './discovery'
 
 @Global()
 @Module({})
@@ -11,8 +11,8 @@ export class DiscoveryModule {
     const OptionsAssignProvider = createAssignOptionsProvider()
     return {
       module: DiscoveryModule,
-      providers: [OptionsProvider, OptionsAssignProvider, DiscoveryService],
-      exports: [DiscoveryService],
+      providers: [OptionsProvider, OptionsAssignProvider, Discovery],
+      exports: [Discovery],
     }
   }
 
@@ -21,8 +21,8 @@ export class DiscoveryModule {
     const OptionsAssignProvider = createAssignOptionsProvider()
     return {
       module: DiscoveryModule,
-      providers: [OptionsProvider, OptionsAssignProvider, DiscoveryService],
-      exports: [DiscoveryService],
+      providers: [OptionsProvider, OptionsAssignProvider, Discovery],
+      exports: [Discovery],
     }
   }
 }

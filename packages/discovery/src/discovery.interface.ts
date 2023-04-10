@@ -1,22 +1,23 @@
 import { FactoryProvider, ModuleMetadata } from '@nestjs/common'
 
-export interface ServerOptions {
+export interface ServerInstance {
+  id: string
   ip: string
   port: number
   name?: string
-  status?: string
+  status?: boolean
   weight?: number
   [index: string]: any
 }
 
-export interface ServiceOptions {
+export interface ServiceInstance {
   name: string
-  servers: ServerOptions[]
+  servers: ServerInstance[]
   [index: string]: any
 }
 
 export interface DiscoveryOptions {
-  services?: ServiceOptions[]
+  services?: ServiceInstance[]
 }
 
 export interface DiscoveryAsyncOptions extends Pick<ModuleMetadata, 'imports'> {

@@ -6,12 +6,7 @@
   "homepage": "https://github.com/nest-micro/nest-micro",
   "main": "./lib/index.js",
   "dependencies": {
-    "handlebars": "^4.7.7",
-    "lodash": "^4.17.21",
     "nacos": "^2.5.1",
     "yaml": "^2.2.1"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.191"
   }
 }

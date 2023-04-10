@@ -1,7 +1,11 @@
 import { Module, DynamicModule, Global } from '@nestjs/common'
-import { DiscoveryNacosOptions, DiscoveryNacosAsyncOptions } from './nacos.interface'
-import { createOptionsProvider, createAsyncOptionsProvider, createAssignOptionsProvider } from './nacos.provider'
-import { DiscoveryNacosService } from './nacos.service'
+import { DiscoveryNacosOptions, DiscoveryNacosAsyncOptions } from './discovery-nacos.interface'
+import {
+  createOptionsProvider,
+  createAsyncOptionsProvider,
+  createAssignOptionsProvider,
+} from './discovery-nacos.provider'
+import { DiscoveryNacos } from './discovery-nacos'
 
 @Global()
 @Module({})
@@ -11,8 +15,8 @@ export class DiscoveryNacosModule {
     const OptionsAssignProvider = createAssignOptionsProvider()
     return {
       module: DiscoveryNacosModule,
-      providers: [OptionsProvider, OptionsAssignProvider, DiscoveryNacosService],
-      exports: [DiscoveryNacosService],
+      providers: [OptionsProvider, OptionsAssignProvider, DiscoveryNacos],
+      exports: [DiscoveryNacos],
     }
   }
 
@@ -21,8 +25,8 @@ export class DiscoveryNacosModule {
     const OptionsAssignProvider = createAssignOptionsProvider()
     return {
       module: DiscoveryNacosModule,
-      providers: [OptionsProvider, OptionsAssignProvider, DiscoveryNacosService],
-      exports: [DiscoveryNacosService],
+      providers: [OptionsProvider, OptionsAssignProvider, DiscoveryNacos],
+      exports: [DiscoveryNacos],
     }
   }
 }

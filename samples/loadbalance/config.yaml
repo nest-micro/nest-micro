@@ -1,0 +1,20 @@
+discovery:
+  services:
+    - name: app1
+      servers:
+        - ip: 127.0.0.1
+          port: 3000
+        - ip: 127.0.0.1
+          port: 4000
+    - name: app2
+      servers:
+        - ip: 127.0.0.1
+          port: 5000
+        - ip: 127.0.0.1
+          port: 6000
+
+loadbalance:
+  rule: RandomRule
+  services:
+    - name: app2
+      rule: RoundRobinRule
