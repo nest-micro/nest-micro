@@ -1,8 +1,8 @@
-import { ServerInstance } from '@nest-micro/discovery'
 import { Loadbalancer } from '../loadbalancer'
+import { LoadbalanceServer } from '../loadbalance.server'
 
 export interface LoadbalanceRule {
   init(loadbalancer: Loadbalancer): void
 
-  choose(): ServerInstance | null
+  choose(): LoadbalanceServer | null
 }

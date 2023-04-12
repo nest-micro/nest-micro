@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
-import { Discovery, ServerInstance } from '@nest-micro/discovery'
-import { LoadbalanceRule } from './interfaces'
+import { Discovery } from '@nest-micro/discovery'
 import { Loadbalancer } from './loadbalancer'
 import { LoadbalanceConfig } from './loadbalance.config'
 import { LoadbalanceRuleRegistry } from './loadbalance-rule.registry'
@@ -8,7 +7,7 @@ import { LoadbalanceRuleRegistry } from './loadbalance-rule.registry'
 @Injectable()
 export class Loadbalance implements OnModuleInit {
   private readonly loadbalancers = new Map<string, Loadbalancer>()
-  private readonly watcher = new Map<string, (servers: ServerInstance[]) => void>()
+  private readonly watcher = new Map<string, Function>()
 
   constructor(
     private readonly discovery: Discovery,
@@ -44,35 +43,35 @@ export class Loadbalance implements OnModuleInit {
     return loadbalancer
   }
 
-  private updateServices(services: string[]) {
+  private updateServices(serviceNames: string[]) {
     this.clearServiceWatcher()
-    services.forEach(async (service) => {
-      const servers = this.discovery.getServiceServers(service)
-      const ruleName = this.loadbalanceConfig.getRule(service)
-      const rule = this.loadbalanceRuleRegistry.getRule(ruleName)
-      if (!rule) {
-        throw new Error(`The rule ${ruleName} is not exist`)
-      }
-      this.createLoadbalancer(service, servers, rule)
-      this.createServiceWatcher(service, rule)
+    serviceNames.forEach(async (serviceName) => {
+      this.createLoadbalancer(serviceName)
+      this.createServiceWatcher(serviceName)
     })
   }
 
-  private createLoadbalancer(serviceName: string, servers: ServerInstance[], rule: LoadbalanceRule) {
-    this.loadbalancers.set(serviceName, new Loadbalancer(serviceName, serviceName, servers, rule))
-  }
-
   private clearServiceWatcher() {
-    for (const [service, callback] of this.watcher.entries()) {
-      this.discovery.unWatch(service, callback)
+    for (const unWatch of this.watcher.values()) {
+      unWatch()
     }
   }
 
-  private createServiceWatcher(service: string, rule: LoadbalanceRule) {
-    const callback = (servers: ServerInstance[]) => {
-      this.createLoadbalancer(service, servers, rule)
+  private createServiceWatcher(serviceName: string) {
+    const unWatch = this.discovery.watch(serviceName, () => {
+      this.createLoadbalancer(serviceName)
+    })
+    this.watcher.set(serviceName, unWatch)
+  }
+
+  private createLoadbalancer(serviceName: string) {
+    const servers = this.discovery.getServiceServers(serviceName)
+    const ruleName = this.loadbalanceConfig.getRule(serviceName)
+    const rule = this.loadbalanceRuleRegistry.getRule(ruleName)
+    if (!rule) {
+      throw new Error(`The rule ${ruleName} is not exist`)
     }
-    this.watcher.set(service, callback)
-    this.discovery.watch(service, callback)
+    const loadbalancer = new Loadbalancer(serviceName, servers, rule)
+    this.loadbalancers.set(serviceName, loadbalancer)
   }
 }

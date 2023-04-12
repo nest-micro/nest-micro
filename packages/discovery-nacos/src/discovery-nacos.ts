@@ -36,19 +36,21 @@ export class DiscoveryNacos implements OnModuleInit, OnModuleDestroy {
   }
 
   subscribe(subscribe: string | NacosNamingSubscribeOptions, listener: (instances: NacosNamingInstance[]) => void) {
-    return this.namingClient.subscribe(subscribe, listener)
+    this.namingClient.subscribe(subscribe, listener)
+    return () => this.unSubscribe(subscribe, listener)
   }
 
   unSubscribe(subscribe: string | NacosNamingSubscribeOptions, listener: (instances: NacosNamingInstance[]) => void) {
-    return this.namingClient.unSubscribe(subscribe, listener)
+    this.namingClient.unSubscribe(subscribe, listener)
   }
 
   registerInstance(instance: NacosNamingInstanceOptions) {
-    return this.namingClient.registerInstance(instance.serviceName, instance, instance.groupName) as Promise<void>
+    this.namingClient.registerInstance(instance.serviceName, instance, instance.groupName) as Promise<void>
+    return () => this.deregisterInstance(instance)
   }
 
   deregisterInstance(instance: NacosNamingInstanceOptions) {
-    return this.namingClient.deregisterInstance(instance.serviceName, instance, instance.groupName) as Promise<void>
+    this.namingClient.deregisterInstance(instance.serviceName, instance, instance.groupName) as Promise<void>
   }
 
   getAllInstances(serviceName: string, groupName?: string, clusters?: string, subscribe?: boolean) {

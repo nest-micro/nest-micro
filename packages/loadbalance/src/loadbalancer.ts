@@ -1,13 +1,8 @@
-import { ServerInstance } from '@nest-micro/discovery'
 import { LoadbalanceRule } from './interfaces'
+import { LoadbalanceServer } from './loadbalance.server'
 
 export class Loadbalancer {
-  constructor(
-    private readonly id: string,
-    public readonly name: string,
-    public servers: ServerInstance[],
-    private rule: LoadbalanceRule
-  ) {
+  constructor(public readonly name: string, public servers: LoadbalanceServer[], private rule: LoadbalanceRule) {
     this.servers = this.initialServers(this.servers)
   }
 
@@ -29,7 +24,7 @@ export class Loadbalancer {
     return this.servers.find((server) => server.id === id)
   }
 
-  addServer(server: ServerInstance) {
+  addServer(server: LoadbalanceServer) {
     this.servers.push(this.initialServer(server))
   }
 
@@ -37,14 +32,14 @@ export class Loadbalancer {
     this.servers = this.servers.filter((server) => server.id !== id)
   }
 
-  private initialServers(servers: ServerInstance[]): ServerInstance[] {
+  private initialServers(servers: LoadbalanceServer[]): LoadbalanceServer[] {
     if (!servers) {
       return []
     }
     return servers.map((server) => this.initialServer(server))
   }
 
-  private initialServer(server: ServerInstance): ServerInstance {
+  private initialServer(server: LoadbalanceServer): LoadbalanceServer {
     if (!server.ip || !server.port) {
       throw new Error('Server does not has id or port')
     }

@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "references": [
+    { "path": "./packages/brakes/tsconfig.build.json" },
     { "path": "./packages/common/tsconfig.build.json" },
     { "path": "./packages/config/tsconfig.build.json" },
     { "path": "./packages/config-nacos/tsconfig.build.json" },

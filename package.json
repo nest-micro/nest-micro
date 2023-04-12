@@ -18,6 +18,7 @@
     "docker:base": "docker-compose -p nest-micro-docker -f docker/docker-compose.yaml up -d nest-micro-mysql nest-micro-nacos"
   },
   "dependencies": {
+    "@nest-micro/brakes": "workspace:*",
     "@nest-micro/common": "workspace:*",
     "@nest-micro/config": "workspace:*",
     "@nest-micro/config-nacos": "workspace:*",

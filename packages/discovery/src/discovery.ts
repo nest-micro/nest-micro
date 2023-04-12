@@ -28,6 +28,7 @@ export class Discovery {
     } else {
       this.serviceCallbackMaps.set(name, new Set([callback]))
     }
+    return () => this.unWatch(name, callback)
   }
 
   unWatch(name: string, callback: ICallbackServer) {
@@ -39,6 +40,7 @@ export class Discovery {
 
   watchServices(callback: ICallbackService) {
     this.serviceCallbackSets.add(callback)
+    return () => this.unWatchServices(callback)
   }
 
   unWatchServices(callback: ICallbackService) {

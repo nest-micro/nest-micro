@@ -8,6 +8,7 @@ importers:
       '@changesets/cli': ^2.26.0
       '@commitlint/cli': ^16.2.3
       '@commitlint/config-conventional': ^16.2.1
+      '@nest-micro/brakes': workspace:*
       '@nest-micro/common': workspace:*
       '@nest-micro/config': workspace:*
       '@nest-micro/config-nacos': workspace:*
@@ -33,6 +34,7 @@ importers:
       rxjs: ^7.2.0
       typescript: ^4.9.5
     dependencies:
+      '@nest-micro/brakes': link:packages/brakes
       '@nest-micro/common': link:packages/common
       '@nest-micro/config': link:packages/config
       '@nest-micro/config-nacos': link:packages/config-nacos
@@ -63,8 +65,17 @@ importers:
       prettier: 2.8.7
       typescript: 4.9.5
 
+  packages/brakes:
+    specifiers:
+      brakes: ^3.1.0
+    dependencies:
+      brakes: 3.1.0
+
   packages/common:
-    specifiers: {}
+    specifiers:
+      '@golevelup/nestjs-discovery': ^3.0.0
+    dependencies:
+      '@golevelup/nestjs-discovery': 3.0.0
 
   packages/config:
     specifiers:
@@ -763,6 +774,12 @@ packages:
     resolution: {integrity: sha512-IoD2MfUnOV58ghIHCiil01PcohxjbYR/qCxsoC+xNgUwh1EY8jOOrYmu3d3a71+tJJ23uscEV4X2HJWMsPJu4g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@golevelup/nestjs-discovery/3.0.0:
+    resolution: {integrity: sha512-ZvkXtobTKxXB1LJanP/l6Z/Fing88IMBr3uabQpU2IWjfsstjh02qYDSU2cfD6CSmNldX5ewW5Pd+SdK2lU8Sw==}
+    dependencies:
+      lodash: 4.17.21
+    dev: false
 
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
@@ -1690,6 +1707,10 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
+  /bluebird/3.7.2:
+    resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
+    dev: false
+
   /body-parser/1.20.1:
     resolution: {integrity: sha512-jWi7abTbYwajOytWCQc37VulmWiRae5RyTpaCyDcS5/lMdtwSz5lOpDE67srw/HYe35f1z3fDQw+3txg7gNtWw==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -1748,6 +1769,12 @@ packages:
     dependencies:
       fill-range: 7.0.1
     dev: true
+
+  /brakes/3.1.0:
+    resolution: {integrity: sha512-R09zwqi0RcCHIGvNQqkwVabd7nv/QPCb9vF/9zPNEAYh3F//68SzL3YotP82+6mv6V1Yp0I4bDnoxYO2P377pg==}
+    dependencies:
+      bluebird: 3.7.2
+    dev: false
 
   /breakword/1.0.5:
     resolution: {integrity: sha512-ex5W9DoOQ/LUEU3PMdLs9ua/CYZl1678NUkKOdUSi8Aw5F1idieaiRURCBFJCwVcrD1J8Iy3vfWSloaMwO2qFg==}
