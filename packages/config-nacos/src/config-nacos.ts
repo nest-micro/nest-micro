@@ -1,6 +1,7 @@
 import { omit } from 'lodash'
 import { Injectable, Provider, OnModuleDestroy } from '@nestjs/common'
-import { ConfigStore } from '@nest-micro/config'
+import { CONFIG_NACOS } from '@nest-micro/common'
+import { Config, ConfigStore } from '@nest-micro/config'
 import { CONFIG_NACOS_OPTIONS } from './config-nacos.constants'
 import { ConfigNacosOptions } from './config-nacos.interface'
 import { NacosClientFactory } from './config-nacos.factory'
@@ -51,11 +52,18 @@ class ConfigNacosImpl implements OnModuleDestroy {
 export function createConfigNacos(): Provider {
   return {
     provide: ConfigNacos,
-    useFactory: async (options: ConfigNacosOptions, store: ConfigStore) => {
-      const configNacosImpl = new ConfigNacosImpl(options, store)
+    useFactory: async (options: ConfigNacosOptions, config: Config) => {
+      const configNacosImpl = new ConfigNacosImpl(options, config.store)
       await configNacosImpl.init()
       return configNacosImpl
     },
-    inject: [CONFIG_NACOS_OPTIONS, ConfigStore],
+    inject: [CONFIG_NACOS_OPTIONS, Config],
+  }
+}
+
+export function createConfigNacosExisting(): Provider {
+  return {
+    provide: CONFIG_NACOS,
+    useExisting: ConfigNacos,
   }
 }

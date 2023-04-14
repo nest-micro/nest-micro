@@ -20,7 +20,7 @@ export class DiscoveryNacos implements OnModuleInit, OnModuleDestroy {
     private readonly discovery: Discovery
   ) {
     this.namingClient = new NacosNamingClient({
-      ...this.options.client,
+      ...this.options.client!,
       logger: this.options.logger !== false ? console : (NoopLogger as unknown as Console),
     })
   }
@@ -72,7 +72,6 @@ export class DiscoveryNacos implements OnModuleInit, OnModuleDestroy {
   private async initInstances() {
     if (!this.options.instance) return null
     await this.registerInstance({
-      // @ts-expect-error
       ip: ip(),
       ...this.options.instance,
     })

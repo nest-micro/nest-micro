@@ -1,6 +1,8 @@
-import { Module, DynamicModule, Global } from '@nestjs/common'
+import { concat, assign } from 'lodash'
+import { Module, DynamicModule, Global, Provider } from '@nestjs/common'
+import { CONFIG, LOADBALANCE } from '@nest-micro/common'
+import { CONFIG_PREFIX, LOADBALANCE_OPTIONS } from './loadbalance.constants'
 import { LoadbalanceOptions, LoadbalanceAsyncOptions } from './interfaces'
-import { createOptionsProvider, createAsyncOptionsProvider, createAssignOptionsProvider } from './loadbalance.provider'
 import { Loadbalance } from './loadbalance'
 import { LoadbalanceConfig } from './loadbalance.config'
 import { LoadbalanceRuleRegistry } from './loadbalance-rule.registry'
@@ -10,36 +12,48 @@ import { LoadbalanceRuleRegister } from './loadbalance-rule.register'
 @Module({})
 export class LoadbalanceModule {
   static forRoot(options?: LoadbalanceOptions): DynamicModule {
-    const OptionsProvider = createOptionsProvider(options)
-    const OptionsAssignProvider = createAssignOptionsProvider()
-    return {
-      module: LoadbalanceModule,
-      providers: [
-        OptionsProvider,
-        OptionsAssignProvider,
-        Loadbalance,
-        LoadbalanceConfig,
-        LoadbalanceRuleRegistry,
-        LoadbalanceRuleRegister,
-      ],
-      exports: [Loadbalance, LoadbalanceRuleRegistry],
-    }
+    return this.register({
+      useFactory: () => options || {},
+    })
   }
 
   static forRootAsync(options: LoadbalanceAsyncOptions): DynamicModule {
-    const OptionsProvider = createAsyncOptionsProvider(options)
-    const OptionsAssignProvider = createAssignOptionsProvider()
+    return this.register(options)
+  }
+
+  private static register(options: LoadbalanceAsyncOptions) {
+    const inject = options.inject || []
+    const dependencies = options.dependencies || []
+
+    const OptionsProvider: Provider = {
+      provide: LOADBALANCE_OPTIONS,
+      async useFactory(...params: any[]) {
+        const config = params[dependencies.indexOf(CONFIG)]
+        const configOptions = config?.get(CONFIG_PREFIX)
+        const factoryOptions = await options.useFactory?.(params.slice(dependencies.length))
+        const assignOptions = assign({}, configOptions, factoryOptions)
+        config?.store.set(CONFIG_PREFIX, assignOptions)
+        return assignOptions
+      },
+      inject: concat(dependencies, inject),
+    }
+
+    const LoadbalanceExisting: Provider = {
+      provide: LOADBALANCE,
+      useExisting: Loadbalance,
+    }
+
     return {
       module: LoadbalanceModule,
       providers: [
         OptionsProvider,
-        OptionsAssignProvider,
         Loadbalance,
+        LoadbalanceExisting,
         LoadbalanceConfig,
         LoadbalanceRuleRegistry,
         LoadbalanceRuleRegister,
       ],
-      exports: [Loadbalance, LoadbalanceRuleRegistry],
+      exports: [Loadbalance, LoadbalanceExisting, LoadbalanceRuleRegistry],
     }
   }
 }

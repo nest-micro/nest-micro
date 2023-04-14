@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { CONFIG } from '@nest-micro/common'
 import { ConfigModule } from '@nest-micro/config'
 import { DiscoveryModule } from '@nest-micro/discovery'
 import { LoadbalanceModule } from '@nest-micro/loadbalance'
@@ -8,8 +9,9 @@ import { AppService } from './app.service'
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    DiscoveryModule.forRoot(),
-    LoadbalanceModule.forRoot(),
+    DiscoveryModule.forRootAsync({
+      dependencies: [CONFIG],
+    }),
     // LoadbalanceModule.forRoot({
     //   rule: 'RandomRule',
     //   services: [
@@ -19,6 +21,9 @@ import { AppService } from './app.service'
     //     },
     //   ],
     // }),
+    LoadbalanceModule.forRootAsync({
+      dependencies: [CONFIG],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

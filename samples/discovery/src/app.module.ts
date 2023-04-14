@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { CONFIG } from '@nest-micro/common'
 import { ConfigModule } from '@nest-micro/config'
 import { DiscoveryModule } from '@nest-micro/discovery'
 import { AppController } from './app.controller'
@@ -7,7 +8,6 @@ import { AppService } from './app.service'
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    DiscoveryModule.forRoot(),
     // DiscoveryModule.forRoot({
     //   services: [
     //     {
@@ -26,6 +26,9 @@ import { AppService } from './app.service'
     //     },
     //   ],
     // }),
+    DiscoveryModule.forRootAsync({
+      dependencies: [CONFIG],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

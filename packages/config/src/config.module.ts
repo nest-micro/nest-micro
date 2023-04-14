@@ -1,4 +1,5 @@
 import { DynamicModule, Global, Module, Provider } from '@nestjs/common'
+import { CONFIG } from '@nest-micro/common'
 import { CONFIG_OPTIONS } from './config.constants'
 import { ConfigOptions } from './config.interface'
 import { Config } from './config'
@@ -9,15 +10,24 @@ import { ConfigLoader } from './config.loader'
 @Module({})
 export class ConfigModule {
   static forRoot(options?: ConfigOptions): DynamicModule {
+    return this.register(options || {})
+  }
+
+  private static register(options: ConfigOptions) {
     const OptionsProvider: Provider = {
       provide: CONFIG_OPTIONS,
-      useValue: options || {},
+      useValue: options,
+    }
+
+    const ConfigExisting: Provider = {
+      provide: CONFIG,
+      useExisting: Config,
     }
 
     return {
       module: ConfigModule,
-      providers: [OptionsProvider, Config, ConfigStore, ConfigLoader],
-      exports: [Config, ConfigStore],
+      providers: [OptionsProvider, Config, ConfigExisting, ConfigStore, ConfigLoader],
+      exports: [Config, ConfigExisting],
     }
   }
 }

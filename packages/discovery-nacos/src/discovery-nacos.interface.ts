@@ -1,5 +1,4 @@
 import { FactoryProvider } from '@nestjs/common'
-import { ModuleMetadata } from '@nestjs/common/interfaces'
 
 export interface NacosNamingClientOptions {
   serverList: string | string[]
@@ -31,7 +30,7 @@ export interface NacosNamingInstanceOptions {
   serviceName: string
   clusterName?: string
   groupName?: string
-  ip: string
+  ip?: string
   port: number
   weight?: number
   valid?: boolean
@@ -48,14 +47,15 @@ export interface NacosNamingSubscribeOptions {
 }
 
 export interface DiscoveryNacosOptions {
-  client: NacosNamingClientOptions
+  client?: NacosNamingClientOptions
   logger?: boolean
   instance?: NacosNamingInstanceOptions
   subscribes?: NacosNamingSubscribeOptions[]
 }
 
-export interface DiscoveryNacosAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+export interface DiscoveryNacosAsyncOptions {
   name?: string
-  useFactory: (...args: any[]) => Promise<DiscoveryNacosOptions> | DiscoveryNacosOptions
+  useFactory?: (...args: any[]) => Promise<DiscoveryNacosOptions> | DiscoveryNacosOptions
   inject?: FactoryProvider['inject']
+  dependencies?: FactoryProvider['inject']
 }

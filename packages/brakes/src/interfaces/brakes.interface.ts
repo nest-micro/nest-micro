@@ -1,4 +1,4 @@
-import { FactoryProvider, ModuleMetadata } from '@nestjs/common'
+import { FactoryProvider } from '@nestjs/common'
 
 export interface IBrakes {
   /**
@@ -169,8 +169,9 @@ export interface BrakesOptions {
   modifyError?: boolean
 }
 
-export interface BrakesAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+export interface BrakesAsyncOptions {
   name?: string
-  useFactory: (...args: any[]) => Promise<BrakesOptions> | BrakesOptions
+  useFactory?: (...args: any[]) => Promise<BrakesOptions> | BrakesOptions
   inject?: FactoryProvider['inject']
+  dependencies?: FactoryProvider['inject']
 }

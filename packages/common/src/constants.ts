@@ -1,8 +1,8 @@
-export const BRAKES = 'BRAKES'
-export const CONFIG = 'CONFIG'
-export const CONFIG_NACOS = 'CONFIG_NACOS'
-export const DISCOVERY = 'DISCOVERY'
-export const DISCOVERY_NACOS = 'DISCOVERY_NACOS'
-export const LOADBALANCE = 'LOADBALANCE'
+export const BRAKES = Symbol('BRAKES')
+export const CONFIG = Symbol('CONFIG')
+export const CONFIG_NACOS = Symbol('CONFIG_NACOS')
+export const DISCOVERY = Symbol('DISCOVERY')
+export const DISCOVERY_NACOS = Symbol('DISCOVERY_NACOS')
+export const LOADBALANCE = Symbol('LOADBALANCE')
 
 export const GUARDS_METADATA = '__guards__'

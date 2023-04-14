@@ -1,4 +1,4 @@
-import { FactoryProvider, ModuleMetadata } from '@nestjs/common'
+import { FactoryProvider } from '@nestjs/common'
 
 export interface ServerInstance {
   id: string
@@ -20,8 +20,9 @@ export interface DiscoveryOptions {
   services?: ServiceInstance[]
 }
 
-export interface DiscoveryAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+export interface DiscoveryAsyncOptions {
   name?: string
-  useFactory: (...args: any[]) => Promise<DiscoveryOptions> | DiscoveryOptions
+  useFactory?: (...args: any[]) => Promise<DiscoveryOptions> | DiscoveryOptions
   inject?: FactoryProvider['inject']
+  dependencies?: FactoryProvider['inject']
 }

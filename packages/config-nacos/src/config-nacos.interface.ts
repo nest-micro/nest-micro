@@ -1,6 +1,5 @@
 import { ClientOptions as NacosClientOptions } from 'nacos'
 import { FactoryProvider } from '@nestjs/common'
-import { ModuleMetadata } from '@nestjs/common/interfaces'
 
 export interface ConfigNacosInputOptions {
   dataId: string
@@ -16,8 +15,9 @@ export interface ConfigNacosOptions {
   sharedConfigs?: ConfigNacosInputOptions | ConfigNacosInputOptions[]
 }
 
-export interface ConfigNacosAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+export interface ConfigNacosAsyncOptions {
   name?: string
-  useFactory: (...args: any[]) => Promise<ConfigNacosOptions> | ConfigNacosOptions
+  useFactory?: (...args: any[]) => Promise<ConfigNacosOptions> | ConfigNacosOptions
   inject?: FactoryProvider['inject']
+  dependencies?: FactoryProvider['inject']
 }
