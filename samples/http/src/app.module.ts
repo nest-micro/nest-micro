@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common'
+import { CONFIG } from '@nest-micro/common'
 import { ConfigModule } from '@nest-micro/config'
+import { DiscoveryModule } from '@nest-micro/discovery'
+import { LoadbalanceModule } from '@nest-micro/loadbalance'
 import { HttpModule } from '@nest-micro/http'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -9,11 +12,14 @@ import { HttpService } from './http.service'
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    HttpModule.forRoot({
-      axios: {
-        timeout: 1000,
-        baseURL: 'http://127.0.0.1:3000',
-      },
+    DiscoveryModule.forRootAsync({
+      dependencies: [CONFIG],
+    }),
+    LoadbalanceModule.forRootAsync({
+      dependencies: [CONFIG],
+    }),
+    HttpModule.forRootAsync({
+      dependencies: [CONFIG],
     }),
   ],
   controllers: [AppController, HttpController],

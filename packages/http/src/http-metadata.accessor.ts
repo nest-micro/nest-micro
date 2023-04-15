@@ -11,6 +11,7 @@ import {
   RESPONSE_METADATA,
   ADAPTER_METADATA,
   INTERCEPTOR_METADATA,
+  LOADBALANCE_SERVICE,
 } from './http.constants'
 
 @Injectable()
@@ -33,15 +34,19 @@ export class HttpMetadataAccessor {
     return this.reflector.get(PARAMETER_METADATA, target)
   }
 
-  getResponse(parent: Function, target: Function): string {
-    return this.reflector.getAllAndOverride(RESPONSE_METADATA, [parent, target])
+  getResponse(dependency: Function, target: Function): string {
+    return this.reflector.getAllAndOverride(RESPONSE_METADATA, [dependency, target])
   }
 
-  getAdapterRefs(parent: Function, target: Function): AxiosAdapter[] {
-    return this.reflector.getAllAndMerge(ADAPTER_METADATA, [parent, target])
+  getAdapterRefs(dependency: Function, target: Function): AxiosAdapter[] {
+    return this.reflector.getAllAndMerge(ADAPTER_METADATA, [dependency, target])
   }
 
-  getInterceptorRefs(parent: Function, target: Function): Interceptor[] {
-    return this.reflector.getAllAndMerge(INTERCEPTOR_METADATA, [parent, target])
+  getInterceptorRefs(dependency: Function, target: Function): Interceptor[] {
+    return this.reflector.getAllAndMerge(INTERCEPTOR_METADATA, [dependency, target])
+  }
+
+  getLoadbalanceService(dependency: Function) {
+    return this.reflector.get(LOADBALANCE_SERVICE, dependency)
   }
 }

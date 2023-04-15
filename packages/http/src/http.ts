@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios'
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { HTTP_OPTIONS } from './http.constants'
 import { HttpOptions } from './interfaces/http.interface'
 import { Interceptor } from './interfaces/interceptor.interface'
@@ -9,8 +9,9 @@ export class Http {
   private http!: AxiosInstance
   private interceptors: Interceptor[] = []
   private brakes: any
-  private fallback: any
+  private brakesFallback: any
   private loadbalance: any
+  private loadbalanceService: any
 
   constructor(@Inject(HTTP_OPTIONS) private readonly options: HttpOptions) {
     this.http = axios.create(this.options.axios || {})
@@ -22,11 +23,12 @@ export class Http {
 
   useBrakes(brakes: any, fallback?: any) {
     this.brakes = brakes
-    this.fallback = fallback
+    this.brakesFallback = fallback
   }
 
-  useLoadbalance(loadbalance: any) {
+  useLoadbalance(loadbalance: any, service?: any) {
     this.loadbalance = loadbalance
+    this.loadbalanceService = service
     return this
   }
 
@@ -36,7 +38,19 @@ export class Http {
     return this
   }
 
-  request(options: AxiosRequestConfig): Promise<AxiosResponse | any> {
+  async request(options: AxiosRequestConfig): Promise<AxiosResponse | any> {
+    return this.doRequest(options)
+  }
+
+  private async doRequest(options: AxiosRequestConfig): Promise<AxiosResponse | any> {
+    if (this.loadbalance && this.loadbalanceService) {
+      const server = this.loadbalance.choose(this.loadbalanceService)
+      if (!server) {
+        throw new InternalServerErrorException(`No available server can handle this request`)
+      }
+      options.baseURL = `http://${server.ip}:${server.port}`
+    }
+
     return this.http.request(options)
   }
 

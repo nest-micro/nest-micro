@@ -1,4 +1,4 @@
-import { LoadbalanceRule } from './interfaces'
+import { LoadbalanceRule } from './interfaces/rule.interface'
 import { LoadbalanceServer } from './loadbalance.server'
 
 export class Loadbalancer {

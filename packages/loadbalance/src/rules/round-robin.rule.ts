@@ -1,8 +1,8 @@
-import { LoadbalanceRule } from '../interfaces'
 import { Loadbalancer } from '../loadbalancer'
+import { LoadbalanceRule } from '../interfaces/rule.interface'
 
 export class RoundRobinRule implements LoadbalanceRule {
-  protected loadbalancer!: Loadbalancer
+  private loadbalancer!: Loadbalancer
   private counter = 0
 
   init(loadbalancer: Loadbalancer) {

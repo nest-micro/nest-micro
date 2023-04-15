@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { LoadbalanceRule } from './interfaces'
+import { LoadbalanceRule } from './interfaces/rule.interface'
 
 @Injectable()
 export class LoadbalanceRuleRegistry {

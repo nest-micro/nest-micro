@@ -23,8 +23,8 @@ export class HttpExplorer implements OnModuleInit {
 
     methods.forEach((method) => {
       const target = method.discoveredMethod.handler
-      const parent = method.discoveredMethod.parentClass.dependencyType
       const instance = method.discoveredMethod.parentClass.instance as unknown as Function
+      const dependency = method.discoveredMethod.parentClass.dependencyType
       const methodName = method.discoveredMethod.methodName
 
       const options: RawAxiosRequestConfig = this.accessor.getOptions(target)
@@ -32,9 +32,10 @@ export class HttpExplorer implements OnModuleInit {
       options.method = this.accessor.getMethod(target)
 
       const paramsMetadata = this.accessor.getParams(target)
-      const responseField = this.accessor.getResponse(parent, target)
-      const AdaptersRefs = this.accessor.getAdapterRefs(parent, target)
-      const InterceptorRefs = this.accessor.getInterceptorRefs(parent, target)
+      const responseField = this.accessor.getResponse(dependency, target)
+      const loadbalanceService = this.accessor.getLoadbalanceService(dependency)
+      const AdaptersRefs = this.accessor.getAdapterRefs(dependency, target)
+      const InterceptorRefs = this.accessor.getInterceptorRefs(dependency, target)
 
       this.orchestrator.addDecoratorRequests({
         instance,
@@ -42,6 +43,7 @@ export class HttpExplorer implements OnModuleInit {
         options,
         paramsMetadata,
         responseField,
+        loadbalanceService,
         AdaptersRefs,
         InterceptorRefs,
       })

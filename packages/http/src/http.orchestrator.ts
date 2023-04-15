@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { AxiosRequestConfig, AxiosAdapter } from 'axios'
 import { Inject, Injectable } from '@nestjs/common'
-import { Scanner } from '@nest-micro/common'
+import { Scanner, BRAKES, LOADBALANCE } from '@nest-micro/common'
 import * as uriParams from 'uri-params'
 import { HTTP_OPTIONS } from './http.constants'
 import { HttpOptions } from './interfaces/http.interface'
@@ -16,6 +16,7 @@ interface DecoratorRequest {
   options: AxiosRequestConfig
   paramsMetadata: ParamsMetadata
   responseField: string
+  loadbalanceService: string
   AdaptersRefs: AxiosAdapter[]
   InterceptorRefs: Interceptor[]
 }
@@ -36,6 +37,8 @@ export class HttpOrchestrator {
 
   async mountDecoratorRequests() {
     const injectables = await this.scanner.injectables(() => true)
+    const brakesProvider = await this.scanner.providers((provider) => provider.name === BRAKES)
+    const loadbalanceProvider = await this.scanner.providers((provider) => provider.name === LOADBALANCE)
 
     this.decoratorRequests.forEach((decoratorRequest) => {
       const {
@@ -44,6 +47,7 @@ export class HttpOrchestrator {
         options,
         paramsMetadata,
         responseField,
+        loadbalanceService,
         // AdaptersRefs,
         InterceptorRefs,
       } = decoratorRequest
@@ -62,8 +66,8 @@ export class HttpOrchestrator {
       }
 
       const http = this.http.create(this.options)
-      http.useBrakes(null)
-      http.useLoadbalance(null)
+      http.useBrakes(brakesProvider[0]?.instance)
+      http.useLoadbalance(loadbalanceProvider[0]?.instance, loadbalanceService)
       http.useInterceptors(...interceptors)
 
       // 重写实例方法，真正调用的是此函数

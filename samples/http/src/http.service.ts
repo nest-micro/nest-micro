@@ -19,13 +19,14 @@ import {
   // UseAdapters,
   UseInterceptors,
 } from '@nest-micro/http'
+import { LoadbalanceService } from '@nest-micro/loadbalance'
 import { Log1Interceptor } from './interceptors/log1.interceptor'
 import { Log2Interceptor } from './interceptors/log2.interceptor'
 
-@Response()
+@Injectable()
 // @UseAdapters()
 @UseInterceptors(Log1Interceptor)
-@Injectable()
+@LoadbalanceService('app')
 export class HttpService {
   @Get('/app')
   @SetQuery('sex', '1')

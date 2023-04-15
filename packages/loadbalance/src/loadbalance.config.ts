@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { LOADBALANCE_OPTIONS } from './loadbalance.constants'
-import { LoadbalanceOptions, ServiceOptions } from './interfaces'
+import { LoadbalanceOptions, ServiceOptions } from './interfaces/loadbalance.interface'
 
 export class LoadbalanceConfig {
   constructor(@Inject(LOADBALANCE_OPTIONS) private readonly options: LoadbalanceOptions) {}

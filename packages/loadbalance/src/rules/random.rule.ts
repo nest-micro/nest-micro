@@ -1,6 +1,6 @@
 import { random } from 'lodash'
-import { LoadbalanceRule } from '../interfaces'
 import { Loadbalancer } from '../loadbalancer'
+import { LoadbalanceRule } from '../interfaces/rule.interface'
 
 export class RandomRule implements LoadbalanceRule {
   private loadbalancer!: Loadbalancer

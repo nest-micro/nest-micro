@@ -1,7 +1,7 @@
 import { Type } from '@nestjs/common'
 
 export interface DiscoveredModule<T = object> {
-  name: string
+  name: string | symbol
   instance: T
   // eslint-disable-next-line @typescript-eslint/ban-types
   injectType?: Function | Type<any>
