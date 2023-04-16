@@ -5,6 +5,7 @@ import { DiscoveryModule } from '@nest-micro/discovery'
 import { LoadbalanceModule } from '@nest-micro/loadbalance'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { LoadbalanceGlobalRuleRegister } from './rules/loadbalance-rule.register'
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { AppService } from './app.service'
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LoadbalanceGlobalRuleRegister],
 })
 export class AppModule {}

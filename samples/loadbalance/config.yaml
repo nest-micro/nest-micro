@@ -12,9 +12,17 @@ discovery:
           port: 5000
         - ip: 127.0.0.1
           port: 6000
+    - name: app3
+      servers:
+        - ip: 127.0.0.1
+          port: 7000
+        - ip: 127.0.0.1
+          port: 8000
 
 loadbalance:
   rule: RandomRule
   services:
     - name: app2
       rule: RoundRobinRule
+    - name: app3
+      rule: FirstRule

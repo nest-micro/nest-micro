@@ -1,15 +1,18 @@
 import { concat, assign } from 'lodash'
 import { Module, DynamicModule, Global, Provider } from '@nestjs/common'
-import { CONFIG, LOADBALANCE } from '@nest-micro/common'
+import { CommonModule, CONFIG, LOADBALANCE } from '@nest-micro/common'
 import { CONFIG_PREFIX, LOADBALANCE_OPTIONS } from './loadbalance.constants'
 import { LoadbalanceOptions, LoadbalanceAsyncOptions } from './interfaces/loadbalance.interface'
 import { Loadbalance } from './loadbalance'
 import { LoadbalanceConfig } from './loadbalance.config'
+import { LoadbalanceExplorer } from './loadbalance.explorer'
 import { LoadbalanceRuleRegistry } from './loadbalance-rule.registry'
 import { LoadbalanceRuleRegister } from './loadbalance-rule.register'
 
 @Global()
-@Module({})
+@Module({
+  imports: [CommonModule],
+})
 export class LoadbalanceModule {
   static forRoot(options?: LoadbalanceOptions): DynamicModule {
     return this.register({
@@ -50,6 +53,7 @@ export class LoadbalanceModule {
         Loadbalance,
         LoadbalanceExisting,
         LoadbalanceConfig,
+        LoadbalanceExplorer,
         LoadbalanceRuleRegistry,
         LoadbalanceRuleRegister,
       ],

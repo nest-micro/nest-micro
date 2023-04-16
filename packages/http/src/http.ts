@@ -2,12 +2,12 @@ import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios'
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { HTTP_OPTIONS } from './http.constants'
 import { HttpOptions } from './interfaces/http.interface'
-import { Interceptor } from './interfaces/interceptor.interface'
+import { HttpInterceptor } from './interfaces/interceptor.interface'
 
 @Injectable()
 export class Http {
   private http!: AxiosInstance
-  private interceptors: Interceptor[] = []
+  private interceptors: HttpInterceptor[] = []
   private brakes: any
   private brakesFallback: any
   private loadbalance: any
@@ -32,7 +32,7 @@ export class Http {
     return this
   }
 
-  useInterceptors(...interceptors: Interceptor[]) {
+  useInterceptors(...interceptors: HttpInterceptor[]) {
     this.interceptors = interceptors
     this.setupInterceptors()
     return this

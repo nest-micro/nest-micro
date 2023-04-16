@@ -5,7 +5,7 @@ import { Scanner, BRAKES, LOADBALANCE } from '@nest-micro/common'
 import * as uriParams from 'uri-params'
 import { HTTP_OPTIONS } from './http.constants'
 import { HttpOptions } from './interfaces/http.interface'
-import { Interceptor } from './interfaces/interceptor.interface'
+import { HttpInterceptor } from './interfaces/interceptor.interface'
 import { ParamsMetadata } from './interfaces/params-metadata.interface'
 import { getRequestParams } from './utils/params.util'
 import { Http } from './http'
@@ -56,7 +56,7 @@ export class HttpOrchestrator {
         InterceptorRefs,
       } = decoratorRequest
 
-      const interceptors = await this.scanner.injectablesInstanceWithDependencys<Interceptor>([
+      const interceptors = await this.scanner.injectablesInstanceWithDependencys<HttpInterceptor>([
         ...this.globalInterceptorRefs,
         ...InterceptorRefs,
       ])

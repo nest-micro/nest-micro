@@ -1,11 +1,11 @@
-import { Injectable, OnModuleInit } from '@nestjs/common'
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common'
 import { Discovery } from '@nest-micro/discovery'
 import { Loadbalancer } from './loadbalancer'
 import { LoadbalanceConfig } from './loadbalance.config'
 import { LoadbalanceRuleRegistry } from './loadbalance-rule.registry'
 
 @Injectable()
-export class Loadbalance implements OnModuleInit {
+export class Loadbalance implements OnApplicationBootstrap {
   private readonly loadbalancers = new Map<string, Loadbalancer>()
   private readonly watcher = new Map<string, Function>()
 
@@ -15,7 +15,7 @@ export class Loadbalance implements OnModuleInit {
     private readonly loadbalanceRuleRegistry: LoadbalanceRuleRegistry
   ) {}
 
-  async onModuleInit() {
+  async onApplicationBootstrap() {
     await this.init()
   }
 

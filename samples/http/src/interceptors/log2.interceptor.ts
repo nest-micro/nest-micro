@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { Interceptor } from '@nest-micro/http'
+import { HttpInterceptor } from '@nest-micro/http'
 
 @Injectable()
-export class Log2Interceptor implements Interceptor {
+export class Log2Interceptor implements HttpInterceptor {
   onRequest(request: any): any {
     console.log('Log2Interceptor onRequest')
     return request
