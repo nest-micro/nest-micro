@@ -5,11 +5,11 @@ import { STATIC_CONTEXT } from '@nestjs/core/injector/constants'
 import type { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper'
 import type { Module } from '@nestjs/core/injector/module'
 import {
-  DiscoveredClass,
-  DiscoveredClassWithMeta,
-  DiscoveredMethodWithMeta,
-  Filter,
-  MetaKey,
+  ScannerClass,
+  ScannerClassWithMeta,
+  ScannerMethodWithMeta,
+  ScannerFilter,
+  ScannerMetaKey,
 } from './scanner.interface'
 
 /**
@@ -17,7 +17,7 @@ import {
  * @param key The meta key to retrieve data from
  * @param component The discovered component to retrieve meta from
  */
-export function getComponentMetaAtKey<T>(key: MetaKey, component: DiscoveredClass): T | undefined {
+export function getComponentMetaAtKey<T>(key: ScannerMetaKey, component: ScannerClass): T | undefined {
   const dependencyMeta = Reflect.getMetadata(key, component.dependencyType) as T
   if (dependencyMeta) {
     return dependencyMeta
@@ -32,7 +32,7 @@ export function getComponentMetaAtKey<T>(key: MetaKey, component: DiscoveredClas
  * A filter that can be used to search for DiscoveredClasses in an App that contain meta attached to a certain key
  * @param key The meta key to search for
  */
-export const withMetaAtKey: (key: MetaKey) => Filter<DiscoveredClass> = (key) => (component) => {
+export const withMetaAtKey: (key: ScannerMetaKey) => ScannerFilter<ScannerClass> = (key) => (component) => {
   // eslint-disable-next-line @typescript-eslint/ban-types
   // @ts-expect-error
   const metaTargets: [] = [
@@ -51,9 +51,9 @@ export const withMetaAtKey: (key: MetaKey) => Filter<DiscoveredClass> = (key) =>
  */
 @Injectable()
 export class Scanner {
-  private discoveredProviders?: Promise<DiscoveredClass[]>
-  private discoveredControllers?: Promise<DiscoveredClass[]>
-  private discoveredInjectables?: Promise<DiscoveredClass[]>
+  private discoveredProviders?: Promise<ScannerClass[]>
+  private discoveredControllers?: Promise<ScannerClass[]>
+  private discoveredInjectables?: Promise<ScannerClass[]>
 
   constructor(private readonly modulesContainer: ModulesContainer, private readonly metadataScanner: MetadataScanner) {}
 
@@ -62,7 +62,7 @@ export class Scanner {
    * 根据 filter 查找所有的 modules
    * @param filter
    */
-  modules(filter: Filter<Module> = () => true) {
+  modules(filter: ScannerFilter<Module> = () => true) {
     const modules = [...this.modulesContainer.values()]
     return modules.filter((x) => filter(x))
   }
@@ -72,7 +72,7 @@ export class Scanner {
    * 根据 filter 查找所有的 injectables (Pipes & Guards & Interceptors & ExceptionFilter)
    * @param filter
    */
-  async injectables(filter: Filter<DiscoveredClass>): Promise<DiscoveredClass[]> {
+  async injectables(filter: ScannerFilter<ScannerClass>): Promise<ScannerClass[]> {
     if (!this.discoveredInjectables) {
       this.discoveredInjectables = this.discover('injectables')
     }
@@ -80,11 +80,32 @@ export class Scanner {
   }
 
   /**
+   * Discovers all providers instance in a Nest App that dependencys (Pipes & Guards & Interceptors & ExceptionFilter)
+   * 根据 injectables 构造函数查找所有的 injectables 实例
+   * @example 如果当前类被 Nest 管理，则从内部获取实例 => @UseInterceptors(LogInterceptor)
+   * @example 如果当前类不被 Nest 管理，则传入的就是实例 => @UseInterceptors(new LogInterceptor())
+   * @param dependencys
+   */
+  async injectablesInstanceWithDependencys<T>(dependencys: Function[]): Promise<T[]> {
+    const injectables = await this.injectables(() => true)
+    const instances: any[] = []
+    for (const dependency of dependencys) {
+      const injectable = injectables.find((i) => dependency === i.dependencyType)
+      if (injectable) {
+        instances.push(injectable.instance)
+      } else {
+        instances.push(dependency)
+      }
+    }
+    return instances
+  }
+
+  /**
    * Discovers all providers in a Nest App that match a filter
    * 根据 filter 查找所有的 providers
    * @param filter
    */
-  async providers(filter: Filter<DiscoveredClass>): Promise<DiscoveredClass[]> {
+  async providers(filter: ScannerFilter<ScannerClass>): Promise<ScannerClass[]> {
     if (!this.discoveredProviders) {
       this.discoveredProviders = this.discover('providers')
     }
@@ -96,12 +117,12 @@ export class Scanner {
    * 根据 metaKey 查找所有的 providers
    * @param metaKey The metakey to scan for
    */
-  async providersWithMetaAtKey<T>(metaKey: MetaKey): Promise<DiscoveredClassWithMeta<T>[]> {
+  async providersWithMetaAtKey<T>(metaKey: ScannerMetaKey): Promise<ScannerClassWithMeta<T>[]> {
     const providers = await this.providers(withMetaAtKey(metaKey))
 
     return providers.map((x) => ({
       meta: getComponentMetaAtKey<T>(metaKey, x) as T,
-      discoveredClass: x,
+      scannerClass: x,
     }))
   }
 
@@ -110,7 +131,7 @@ export class Scanner {
    * 根据 filter 查找所有的 controllers
    * @param filter
    */
-  async controllers(filter: Filter<DiscoveredClass>): Promise<DiscoveredClass[]> {
+  async controllers(filter: ScannerFilter<ScannerClass>): Promise<ScannerClass[]> {
     if (!this.discoveredControllers) {
       this.discoveredControllers = this.discover('controllers')
     }
@@ -122,12 +143,12 @@ export class Scanner {
    * 根据 metaKey 查找所有的 controllers
    * @param metaKey The metakey to scan for
    */
-  async controllersWithMetaAtKey<T>(metaKey: MetaKey): Promise<DiscoveredClassWithMeta<T>[]> {
+  async controllersWithMetaAtKey<T>(metaKey: ScannerMetaKey): Promise<ScannerClassWithMeta<T>[]> {
     const controllers = await this.controllers(withMetaAtKey(metaKey))
 
     return controllers.map((x) => ({
       meta: getComponentMetaAtKey<T>(metaKey, x) as T,
-      discoveredClass: x,
+      scannerClass: x,
     }))
   }
 
@@ -137,7 +158,7 @@ export class Scanner {
    * @param component
    * @param metaKey
    */
-  classMethodsWithMetaAtKey<T>(component: DiscoveredClass, metaKey: MetaKey): DiscoveredMethodWithMeta<T>[] {
+  classMethodsWithMetaAtKey<T>(component: ScannerClass, metaKey: ScannerMetaKey): ScannerMethodWithMeta<T>[] {
     const { instance } = component
 
     if (!instance) {
@@ -160,9 +181,9 @@ export class Scanner {
    * @param providerFilter A predicate used to limit the providers being scanned. Defaults to all providers in the app module
    */
   async providerMethodsWithMetaAtKey<T>(
-    metaKey: MetaKey,
-    providerFilter: Filter<DiscoveredClass> = () => true
-  ): Promise<DiscoveredMethodWithMeta<T>[]> {
+    metaKey: ScannerMetaKey,
+    providerFilter: ScannerFilter<ScannerClass> = () => true
+  ): Promise<ScannerMethodWithMeta<T>[]> {
     const providers = await this.providers(providerFilter)
 
     return flatMap(providers, (provider) => this.classMethodsWithMetaAtKey<T>(provider, metaKey))
@@ -175,34 +196,34 @@ export class Scanner {
    * @param controllerFilter A predicate used to limit the controllers being scanned. Defaults to all providers in the app module
    */
   async controllerMethodsWithMetaAtKey<T>(
-    metaKey: MetaKey,
-    controllerFilter: Filter<DiscoveredClass> = () => true
-  ): Promise<DiscoveredMethodWithMeta<T>[]> {
+    metaKey: ScannerMetaKey,
+    controllerFilter: ScannerFilter<ScannerClass> = () => true
+  ): Promise<ScannerMethodWithMeta<T>[]> {
     const controllers = await this.controllers(controllerFilter)
 
     return flatMap(controllers, (controller) => this.classMethodsWithMetaAtKey<T>(controller, metaKey))
   }
 
   private extractMethodMetaAtKey<T>(
-    metaKey: MetaKey,
-    discoveredClass: DiscoveredClass,
+    metaKey: ScannerMetaKey,
+    scannerClass: ScannerClass,
     prototype: any,
     methodName: string
-  ): DiscoveredMethodWithMeta<T> {
+  ): ScannerMethodWithMeta<T> {
     const handler = prototype[methodName]
     const meta: T = Reflect.getMetadata(metaKey, handler)
 
     return {
       meta,
-      discoveredMethod: {
+      scannerMethod: {
         handler,
         methodName,
-        parentClass: discoveredClass,
+        parentClass: scannerClass,
       },
     }
   }
 
-  private async toDiscoveredClass(nestModule: Module, wrapper: InstanceWrapper<any>): Promise<DiscoveredClass> {
+  private async toScannerClass(nestModule: Module, wrapper: InstanceWrapper<any>): Promise<ScannerClass> {
     const instanceHost = wrapper.getInstanceByContextId(STATIC_CONTEXT, wrapper && wrapper.id ? wrapper.id : undefined)
 
     if (instanceHost.isPending && !instanceHost.isResolved) {
@@ -231,7 +252,7 @@ export class Scanner {
         const components = [...nestModule[component].values()]
         return components
           .filter((component) => component.scope !== Scope.REQUEST)
-          .map((component) => this.toDiscoveredClass(nestModule, component))
+          .map((component) => this.toScannerClass(nestModule, component))
       })
     )
   }

@@ -1,5 +1,6 @@
 export * from './http'
 export * from './http.module'
+export * from './http-interceptor.register'
 export * from './interfaces/http.interface'
 export * from './interfaces/interceptor.interface'
 

@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { AxiosRequestConfig, AxiosAdapter } from 'axios'
+import { AxiosRequestConfig } from 'axios'
 import { Inject, Injectable } from '@nestjs/common'
 import { Scanner, BRAKES, LOADBALANCE } from '@nest-micro/common'
 import * as uriParams from 'uri-params'
@@ -17,13 +17,14 @@ interface DecoratorRequest {
   paramsMetadata: ParamsMetadata
   responseField: string
   loadbalanceService: string
-  AdaptersRefs: AxiosAdapter[]
-  InterceptorRefs: Interceptor[]
+  AdaptersRefs: Function[]
+  InterceptorRefs: Function[]
 }
 
 @Injectable()
 export class HttpOrchestrator {
   private readonly decoratorRequests: DecoratorRequest[] = []
+  private readonly globalInterceptorRefs: Function[] = []
 
   constructor(
     private readonly http: Http,
@@ -35,12 +36,15 @@ export class HttpOrchestrator {
     this.decoratorRequests.push(decoratorRequest)
   }
 
-  async mountDecoratorRequests() {
-    const injectables = await this.scanner.injectables(() => true)
-    const brakesProvider = await this.scanner.providers((provider) => provider.name === BRAKES)
-    const loadbalanceProvider = await this.scanner.providers((provider) => provider.name === LOADBALANCE)
+  addGlobalInterceptors(interceptors: Function[]) {
+    this.globalInterceptorRefs.push(...interceptors)
+  }
 
-    this.decoratorRequests.forEach((decoratorRequest) => {
+  async mountDecoratorRequests() {
+    const brakes = (await this.scanner.providers((provider) => provider.name === BRAKES))[0]?.instance
+    const loadbalance = (await this.scanner.providers((provider) => provider.name === LOADBALANCE))[0]?.instance
+
+    for (const decoratorRequest of this.decoratorRequests) {
       const {
         instance,
         methodName,
@@ -52,22 +56,14 @@ export class HttpOrchestrator {
         InterceptorRefs,
       } = decoratorRequest
 
-      // 获取拦截器
-      // 1. 如果当前类被 Nest 管理，则从内部获取实例 => @UseInterceptors(LogInterceptor)
-      // 2. 如果当前类不被 Nest 管理，则传入的就是实例 => @UseInterceptors(new LogInterceptor())
-      const interceptors: Interceptor[] = []
-      for (const interceptor of InterceptorRefs) {
-        const injectable = injectables.find((i) => interceptor === i.dependencyType)
-        if (injectable) {
-          interceptors.push(injectable.instance)
-        } else {
-          interceptors.push(interceptor)
-        }
-      }
+      const interceptors = await this.scanner.injectablesInstanceWithDependencys<Interceptor>([
+        ...this.globalInterceptorRefs,
+        ...InterceptorRefs,
+      ])
 
       const http = this.http.create(this.options)
-      http.useBrakes(brakesProvider[0]?.instance)
-      http.useLoadbalance(loadbalanceProvider[0]?.instance, loadbalanceService)
+      http.useBrakes(brakes)
+      http.useLoadbalance(loadbalance, loadbalanceService)
       http.useInterceptors(...interceptors)
 
       // 重写实例方法，真正调用的是此函数
@@ -89,6 +85,6 @@ export class HttpOrchestrator {
           return response
         }
       }
-    })
+    }
   }
 }

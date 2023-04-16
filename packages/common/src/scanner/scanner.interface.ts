@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common'
 
-export interface DiscoveredModule<T = object> {
+export interface ScannerModule<T = object> {
   name: string | symbol
   instance: T
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -8,26 +8,26 @@ export interface DiscoveredModule<T = object> {
   dependencyType: Type<T>
 }
 
-export interface DiscoveredClass extends DiscoveredModule {
-  parentModule: DiscoveredModule
+export interface ScannerClass extends ScannerModule {
+  parentModule: ScannerModule
 }
 
-export interface DiscoveredMethod {
+export interface ScannerMethod {
   handler: (...args: any[]) => any
   methodName: string
-  parentClass: DiscoveredClass
+  parentClass: ScannerClass
 }
 
-export interface DiscoveredMethodWithMeta<T> {
-  discoveredMethod: DiscoveredMethod
+export interface ScannerMethodWithMeta<T> {
+  scannerMethod: ScannerMethod
   meta: T
 }
 
-export interface DiscoveredClassWithMeta<T> {
-  discoveredClass: DiscoveredClass
+export interface ScannerClassWithMeta<T> {
+  scannerClass: ScannerClass
   meta: T
 }
 
-export type MetaKey = string | number | symbol
+export type ScannerMetaKey = string | number | symbol
 
-export type Filter<T> = (item: T) => boolean
+export type ScannerFilter<T> = (item: T) => boolean

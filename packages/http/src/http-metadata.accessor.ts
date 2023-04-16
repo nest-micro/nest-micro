@@ -1,7 +1,6 @@
-import { AxiosRequestConfig, AxiosAdapter } from 'axios'
+import { AxiosRequestConfig } from 'axios'
 import { Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { Interceptor } from './interfaces/interceptor.interface'
 import { ParamsMetadata } from './interfaces/params-metadata.interface'
 import {
   REQUEST_PATH_METADATA,
@@ -38,11 +37,11 @@ export class HttpMetadataAccessor {
     return this.reflector.getAllAndOverride(RESPONSE_METADATA, [dependency, target])
   }
 
-  getAdapterRefs(dependency: Function, target: Function): AxiosAdapter[] {
+  getAdapterRefs(dependency: Function, target: Function): Function[] {
     return this.reflector.getAllAndMerge(ADAPTER_METADATA, [dependency, target])
   }
 
-  getInterceptorRefs(dependency: Function, target: Function): Interceptor[] {
+  getInterceptorRefs(dependency: Function, target: Function): Function[] {
     return this.reflector.getAllAndMerge(INTERCEPTOR_METADATA, [dependency, target])
   }
 

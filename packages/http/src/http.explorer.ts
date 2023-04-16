@@ -1,9 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
-import { Scanner } from '@nest-micro/common'
+import { Scanner, ScannerClassWithMeta, ScannerMethodWithMeta } from '@nest-micro/common'
 import { RawAxiosRequestConfig } from 'axios'
-import { REQUEST_METHOD_METADATA } from './http.constants'
+import { INTERCEPTOR_METADATA, REQUEST_METHOD_METADATA } from './http.constants'
 import { HttpMetadataAccessor } from './http-metadata.accessor'
 import { HttpOrchestrator } from './http.orchestrator'
+import { HttpInterceptorRegister } from './http-interceptor.register'
 
 @Injectable()
 export class HttpExplorer implements OnModuleInit {
@@ -19,34 +20,49 @@ export class HttpExplorer implements OnModuleInit {
   }
 
   async explore() {
-    const methods = await this.scanner.providerMethodsWithMetaAtKey(REQUEST_METHOD_METADATA)
-
+    const methods = await this.scanner.providerMethodsWithMetaAtKey<string>(REQUEST_METHOD_METADATA)
     methods.forEach((method) => {
-      const target = method.discoveredMethod.handler
-      const instance = method.discoveredMethod.parentClass.instance as unknown as Function
-      const dependency = method.discoveredMethod.parentClass.dependencyType
-      const methodName = method.discoveredMethod.methodName
-
-      const options: RawAxiosRequestConfig = this.accessor.getOptions(target)
-      options.url = this.accessor.getPath(target)
-      options.method = this.accessor.getMethod(target)
-
-      const paramsMetadata = this.accessor.getParams(target)
-      const responseField = this.accessor.getResponse(dependency, target)
-      const loadbalanceService = this.accessor.getLoadbalanceService(dependency)
-      const AdaptersRefs = this.accessor.getAdapterRefs(dependency, target)
-      const InterceptorRefs = this.accessor.getInterceptorRefs(dependency, target)
-
-      this.orchestrator.addDecoratorRequests({
-        instance,
-        methodName,
-        options,
-        paramsMetadata,
-        responseField,
-        loadbalanceService,
-        AdaptersRefs,
-        InterceptorRefs,
-      })
+      this.lookupRequests(method)
     })
+
+    const interceptors = await this.scanner.providersWithMetaAtKey<Function[]>(INTERCEPTOR_METADATA)
+    interceptors.forEach((interceptor) => {
+      this.lookupGlobalInterceptors(interceptor)
+    })
+  }
+
+  lookupRequests(method: ScannerMethodWithMeta<string>) {
+    const target = method.scannerMethod.handler
+    const instance = method.scannerMethod.parentClass.instance as unknown as Function
+    const dependency = method.scannerMethod.parentClass.dependencyType
+    const methodName = method.scannerMethod.methodName
+
+    const options: RawAxiosRequestConfig = this.accessor.getOptions(target)
+    options.url = this.accessor.getPath(target)
+    options.method = this.accessor.getMethod(target)
+
+    const paramsMetadata = this.accessor.getParams(target)
+    const responseField = this.accessor.getResponse(dependency, target)
+    const loadbalanceService = this.accessor.getLoadbalanceService(dependency)
+    const AdaptersRefs = this.accessor.getAdapterRefs(dependency, target)
+    const InterceptorRefs = this.accessor.getInterceptorRefs(dependency, target)
+
+    this.orchestrator.addDecoratorRequests({
+      instance,
+      methodName,
+      options,
+      paramsMetadata,
+      responseField,
+      loadbalanceService,
+      AdaptersRefs,
+      InterceptorRefs,
+    })
+  }
+
+  lookupGlobalInterceptors(interceptor: ScannerClassWithMeta<Function[]>) {
+    const instance = interceptor.scannerClass.instance
+    if (instance && instance instanceof HttpInterceptorRegister) {
+      this.orchestrator.addGlobalInterceptors(interceptor.meta)
+    }
   }
 }

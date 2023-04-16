@@ -20,12 +20,12 @@ import {
   UseInterceptors,
 } from '@nest-micro/http'
 import { LoadbalanceService } from '@nest-micro/loadbalance'
-import { Log1Interceptor } from './interceptors/log1.interceptor'
 import { Log2Interceptor } from './interceptors/log2.interceptor'
+import { Log3Interceptor } from './interceptors/log3.interceptor'
 
 @Injectable()
 // @UseAdapters()
-@UseInterceptors(Log1Interceptor)
+@UseInterceptors(Log2Interceptor)
 @LoadbalanceService('app')
 export class HttpService {
   @Get('/app')
@@ -33,7 +33,7 @@ export class HttpService {
   @SetParam('name', 'l')
   @ResponseBody()
   // @UseAdapters()
-  @UseInterceptors(new Log2Interceptor())
+  @UseInterceptors(new Log3Interceptor())
   getHttp(@Query('sex2') sex: string, @Param('name2') name: string) {}
 
   @Post('/app')
