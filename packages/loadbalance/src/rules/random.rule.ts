@@ -1,7 +1,11 @@
 import { random } from 'lodash'
+import { Injectable } from '@nestjs/common'
 import { Loadbalancer } from '../loadbalancer'
 import { LoadbalanceRule } from '../interfaces/rule.interface'
+import { RegisterRule } from '../decorators/register-rule.decorator'
 
+@Injectable()
+@RegisterRule()
 export class RandomRule implements LoadbalanceRule {
   private loadbalancer!: Loadbalancer
 

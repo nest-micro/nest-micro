@@ -1,6 +1,10 @@
-import { Loadbalancer, LoadbalanceRule } from '@nest-micro/loadbalance'
+import { Injectable } from '@nestjs/common'
+import { Loadbalancer, LoadbalanceRule, RegisterRule } from '@nest-micro/loadbalance'
 
+@Injectable()
+@RegisterRule()
 export class FirstRule implements LoadbalanceRule {
+  // public name = 'CustomNameRule'
   private loadbalancer!: Loadbalancer
 
   init(loadbalancer: Loadbalancer) {

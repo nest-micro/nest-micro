@@ -56,15 +56,13 @@ export class HttpOrchestrator {
         InterceptorRefs,
       } = decoratorRequest
 
-      const interceptors = await this.scanner.injectablesInstanceWithDependencys<HttpInterceptor>([
-        ...this.globalInterceptorRefs,
-        ...InterceptorRefs,
-      ])
+      const globalInterceptors = this.globalInterceptorRefs as HttpInterceptor[]
+      const scopeInterceptors = await this.scanner.injectablesInstanceWithDependencys<HttpInterceptor>(InterceptorRefs)
 
       const http = this.http.create(this.options)
       http.useBrakes(brakes)
       http.useLoadbalance(loadbalance, loadbalanceService)
-      http.useInterceptors(...interceptors)
+      http.useInterceptors(...globalInterceptors, ...scopeInterceptors)
 
       // 重写实例方法，真正调用的是此函数
       // @ts-expect-error

@@ -8,3 +8,4 @@ export * from './interfaces/loadbalance.interface'
 
 export * from './decorators/loadbalanced.decorator'
 export * from './decorators/use-rules.decorator'
+export * from './decorators/register-rule.decorator'

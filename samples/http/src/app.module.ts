@@ -8,7 +8,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { HttpController } from './http.controller'
 import { HttpService } from './http.service'
-import { HttpGlobalInterceptorRegister } from './interceptors/http-interceptor.register'
+import { Log1Interceptor } from './interceptors/log1.interceptor'
 
 @Module({
   imports: [
@@ -24,6 +24,6 @@ import { HttpGlobalInterceptorRegister } from './interceptors/http-interceptor.r
     }),
   ],
   controllers: [AppController, HttpController],
-  providers: [AppService, HttpService, HttpGlobalInterceptorRegister],
+  providers: [AppService, HttpService, Log1Interceptor],
 })
 export class AppModule {}

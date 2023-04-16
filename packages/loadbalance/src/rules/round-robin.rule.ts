@@ -1,6 +1,10 @@
+import { Injectable } from '@nestjs/common'
 import { Loadbalancer } from '../loadbalancer'
 import { LoadbalanceRule } from '../interfaces/rule.interface'
+import { RegisterRule } from '../decorators/register-rule.decorator'
 
+@Injectable()
+@RegisterRule()
 export class RoundRobinRule implements LoadbalanceRule {
   private loadbalancer!: Loadbalancer
   private counter = 0

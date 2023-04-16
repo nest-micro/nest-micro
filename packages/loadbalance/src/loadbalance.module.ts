@@ -55,7 +55,7 @@ export class LoadbalanceModule {
         LoadbalanceConfig,
         LoadbalanceExplorer,
         LoadbalanceRuleRegistry,
-        LoadbalanceRuleRegister,
+        ...LoadbalanceRuleRegister,
       ],
       exports: [Loadbalance, LoadbalanceExisting, LoadbalanceRuleRegistry],
     }

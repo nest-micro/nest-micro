@@ -1,10 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { Scanner, ScannerClassWithMeta, ScannerMethodWithMeta } from '@nest-micro/common'
 import { RawAxiosRequestConfig } from 'axios'
-import { INTERCEPTOR_METADATA, REQUEST_METHOD_METADATA } from './http.constants'
+import { REQUEST_METHOD_METADATA, REGISTER_INTERCEPTOR_METADATA } from './http.constants'
 import { HttpMetadataAccessor } from './http-metadata.accessor'
 import { HttpOrchestrator } from './http.orchestrator'
-import { HttpInterceptorRegister } from './http-interceptor.register'
 
 @Injectable()
 export class HttpExplorer implements OnModuleInit {
@@ -25,7 +24,7 @@ export class HttpExplorer implements OnModuleInit {
       this.lookupRequests(method)
     })
 
-    const interceptors = await this.scanner.providersWithMetaAtKey<Function[]>(INTERCEPTOR_METADATA)
+    const interceptors = await this.scanner.providersWithMetaAtKey<Function[]>(REGISTER_INTERCEPTOR_METADATA)
     interceptors.forEach((interceptor) => {
       this.lookupGlobalInterceptors(interceptor)
     })
@@ -61,8 +60,6 @@ export class HttpExplorer implements OnModuleInit {
 
   lookupGlobalInterceptors(interceptor: ScannerClassWithMeta<Function[]>) {
     const instance = interceptor.scannerClass.instance
-    if (instance && instance instanceof HttpInterceptorRegister) {
-      this.orchestrator.addGlobalInterceptors(interceptor.meta)
-    }
+    this.orchestrator.addGlobalInterceptors([instance as Function])
   }
 }
