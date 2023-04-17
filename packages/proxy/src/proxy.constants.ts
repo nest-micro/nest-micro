@@ -1,0 +1,6 @@
+export const CONFIG_PREFIX = 'proxy'
+
+export const PROXY_OPTIONS = Symbol('PROXY_OPTIONS')
+
+export const FILTERS_METADATA = 'FILTERS_METADATA'
+export const REGISTER_FILTERS_METADATA = 'REGISTER_FILTERS_METADATA'

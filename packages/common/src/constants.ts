@@ -5,5 +5,6 @@ export const DISCOVERY = Symbol('DISCOVERY')
 export const DISCOVERY_NACOS = Symbol('DISCOVERY_NACOS')
 export const HTTP = Symbol('HTTP')
 export const LOADBALANCE = Symbol('LOADBALANCE')
+export const PROXY = Symbol('PROXY')
 
 export const GUARDS_METADATA = '__guards__'

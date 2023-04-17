@@ -8,7 +8,8 @@
     { "path": "./packages/discovery/tsconfig.build.json" },
     { "path": "./packages/discovery-nacos/tsconfig.build.json" },
     { "path": "./packages/http/tsconfig.build.json" },
-    { "path": "./packages/loadbalance/tsconfig.build.json" }
+    { "path": "./packages/loadbalance/tsconfig.build.json" },
+    { "path": "./packages/proxy/tsconfig.build.json" }
   ],
   "files": []
 }

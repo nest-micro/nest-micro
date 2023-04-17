@@ -16,6 +16,7 @@ importers:
       '@nest-micro/discovery-nacos': workspace:*
       '@nest-micro/http': workspace:*
       '@nest-micro/loadbalance': workspace:*
+      '@nest-micro/proxy': workspace:*
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -43,6 +44,7 @@ importers:
       '@nest-micro/discovery-nacos': link:packages/discovery-nacos
       '@nest-micro/http': link:packages/http
       '@nest-micro/loadbalance': link:packages/loadbalance
+      '@nest-micro/proxy': link:packages/proxy
       '@nestjs/common': 9.4.0_mnr6j2del53muneqly5h4y27ai
       '@nestjs/core': 9.4.0_qfvkcqqlilywzuwwu2xqitbr3m
       '@nestjs/platform-express': 9.4.0_gqkob5jndcfeb3wjw72wbdwyne
@@ -116,6 +118,15 @@ importers:
 
   packages/loadbalance:
     specifiers: {}
+
+  packages/proxy:
+    specifiers:
+      '@types/http-proxy': ^1.17.10
+      http-proxy: ^1.18.1
+    dependencies:
+      http-proxy: 1.18.1
+    devDependencies:
+      '@types/http-proxy': 1.17.10
 
   samples/brakes:
     specifiers:
@@ -202,6 +213,20 @@ importers:
       rxjs: 7.8.0
 
   samples/loadbalance:
+    specifiers:
+      '@nestjs/common': ^9.0.0
+      '@nestjs/core': ^9.0.0
+      '@nestjs/platform-express': ^9.0.0
+      reflect-metadata: ^0.1.13
+      rxjs: ^7.2.0
+    dependencies:
+      '@nestjs/common': 9.4.0_mnr6j2del53muneqly5h4y27ai
+      '@nestjs/core': 9.4.0_qfvkcqqlilywzuwwu2xqitbr3m
+      '@nestjs/platform-express': 9.4.0_gqkob5jndcfeb3wjw72wbdwyne
+      reflect-metadata: 0.1.13
+      rxjs: 7.8.0
+
+  samples/proxy:
     specifiers:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -1151,6 +1176,12 @@ packages:
       '@types/express-serve-static-core': 4.17.33
       '@types/qs': 6.9.7
       '@types/serve-static': 1.15.1
+    dev: true
+
+  /@types/http-proxy/1.17.10:
+    resolution: {integrity: sha512-Qs5aULi+zV1bwKAg5z1PWnDXWmsn+LxIvUGv6E2+OOMYhclZMO+OXd9pYVf2gLykf2I7IV2u7oTHwChPNsvJ7g==}
+    dependencies:
+      '@types/node': 18.11.18
     dev: true
 
   /@types/is-ci/3.0.0:
@@ -2986,6 +3017,10 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /eventemitter3/4.0.7:
+    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+    dev: false
+
   /events/3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
@@ -3620,6 +3655,17 @@ packages:
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /http-proxy/1.18.1:
+    resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      eventemitter3: 4.0.7
+      follow-redirects: 1.15.2
+      requires-port: 1.0.0
+    transitivePeerDependencies:
+      - debug
     dev: false
 
   /https-proxy-agent/5.0.1:
@@ -5204,6 +5250,10 @@ packages:
   /require-main-filename/2.0.0:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
     dev: true
+
+  /requires-port/1.0.0:
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
+    dev: false
 
   /resolve-dir/1.0.1:
     resolution: {integrity: sha512-R7uiTjECzvOsWSfdM0QKFNBVFcK27aHOUwdvK53BcW8zqnGdYp0Fbj82cy54+2A4P2tFM22J5kRfe1R+lM/1yg==}

@@ -1,0 +1,14 @@
+{
+  "name": "@nest-micro/proxy",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "haiweilian <haiweilian@foxmail.com>",
+  "homepage": "https://github.com/nest-micro/nest-micro",
+  "main": "./lib/index.js",
+  "dependencies": {
+    "http-proxy": "^1.18.1"
+  },
+  "devDependencies": {
+    "@types/http-proxy": "^1.17.10"
+  }
+}

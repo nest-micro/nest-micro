@@ -26,6 +26,7 @@
     "@nest-micro/discovery-nacos": "workspace:*",
     "@nest-micro/http": "workspace:*",
     "@nest-micro/loadbalance": "workspace:*",
+    "@nest-micro/proxy": "workspace:*",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
