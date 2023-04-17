@@ -32,7 +32,7 @@ export class Proxy implements OnApplicationBootstrap {
   async forward(req: Request, res: Response, id: string) {
     const route = this.routeRegistry.getRoute(id)
     if (!route) {
-      throw new NotFoundException('No route config found in proxy config files, please check it.')
+      throw new NotFoundException('No route config found in proxy config files')
     }
 
     if (route.uri.startsWith('lb://')) {

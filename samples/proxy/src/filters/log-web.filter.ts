@@ -22,5 +22,8 @@ export class LogWebFilter implements ProxyFilter {
 
   error(err: Error, request: Request, response: Response) {
     console.log('LogWebFilter error', err)
+    response.setHeader('Content-Type', 'application/json')
+    response.statusCode = 500
+    response.end(JSON.stringify({ message: err.message, status: 500 }))
   }
 }

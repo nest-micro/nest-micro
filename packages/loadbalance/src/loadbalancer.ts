@@ -1,3 +1,4 @@
+import { InternalServerErrorException } from '@nestjs/common'
 import { LoadbalanceRule } from './interfaces/rule.interface'
 import { LoadbalanceServer } from './loadbalance.server'
 
@@ -8,7 +9,7 @@ export class Loadbalancer {
 
   choose() {
     if (!this.rule) {
-      throw new Error('The rule is not exist.')
+      throw new InternalServerErrorException('The rule is not exist.')
     }
 
     this.rule.init(this)
@@ -41,7 +42,7 @@ export class Loadbalancer {
 
   private initialServer(server: LoadbalanceServer): LoadbalanceServer {
     if (!server.ip || !server.port) {
-      throw new Error('Server does not has id or port')
+      throw new InternalServerErrorException('Server does not has id or port')
     }
     return server
   }

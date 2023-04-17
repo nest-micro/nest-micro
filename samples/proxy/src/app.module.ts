@@ -18,64 +18,64 @@ import { LogWebFilter } from './filters/log-web.filter'
     LoadbalanceModule.forRootAsync({
       dependencies: [CONFIG],
     }),
-    ProxyModule.forRoot({
-      routes: [
-        {
-          id: 'app1',
-          uri: 'http://127.0.0.1:3000',
-          filters: [
-            {
-              name: 'RequestPathFilter',
-              parameters: {
-                strip: 2,
-                // prefix: '',
-              },
-            },
-            {
-              name: 'RequestHeaderFilter',
-              parameters: {
-                authorization: 'Request dGVzdDp0ZXN0',
-              },
-            },
-            {
-              name: 'ResponseHeaderFilter',
-              parameters: {
-                authorization: 'Response dGVzdDp0ZXN0',
-              },
-            },
-          ],
-        },
-        {
-          id: 'app2',
-          uri: 'lb://app',
-          filters: [
-            {
-              name: 'RequestPathFilter',
-              parameters: {
-                strip: 3,
-                prefix: '/app',
-              },
-            },
-            {
-              name: 'RequestHeaderFilter',
-              parameters: {
-                authorization: 'Request dGVzdDp0ZXN0',
-              },
-            },
-            {
-              name: 'ResponseHeaderFilter',
-              parameters: {
-                authorization: 'Response dGVzdDp0ZXN0',
-              },
-            },
-          ],
-        },
-      ],
-      extras: {},
-    }),
-    // ProxyModule.forRootAsync({
-    //   dependencies: [CONFIG],
+    // ProxyModule.forRoot({
+    //   routes: [
+    //     {
+    //       id: 'app1',
+    //       uri: 'http://127.0.0.1:3000',
+    //       filters: [
+    //         {
+    //           name: 'RequestPathFilter',
+    //           parameters: {
+    //             strip: 2,
+    //             // prefix: '',
+    //           },
+    //         },
+    //         {
+    //           name: 'RequestHeaderFilter',
+    //           parameters: {
+    //             authorization: 'Request dGVzdDp0ZXN0',
+    //           },
+    //         },
+    //         {
+    //           name: 'ResponseHeaderFilter',
+    //           parameters: {
+    //             authorization: 'Response dGVzdDp0ZXN0',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       id: 'app2',
+    //       uri: 'lb://app',
+    //       filters: [
+    //         {
+    //           name: 'RequestPathFilter',
+    //           parameters: {
+    //             strip: 3,
+    //             prefix: '/app',
+    //           },
+    //         },
+    //         {
+    //           name: 'RequestHeaderFilter',
+    //           parameters: {
+    //             authorization: 'Request dGVzdDp0ZXN0',
+    //           },
+    //         },
+    //         {
+    //           name: 'ResponseHeaderFilter',
+    //           parameters: {
+    //             authorization: 'Response dGVzdDp0ZXN0',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   ],
+    //   extras: {},
     // }),
+    ProxyModule.forRootAsync({
+      dependencies: [CONFIG],
+    }),
   ],
   controllers: [AppController, ApiController],
   providers: [AppService, LogWebFilter],

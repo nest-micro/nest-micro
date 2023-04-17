@@ -1,4 +1,4 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common'
+import { Injectable, OnApplicationBootstrap, InternalServerErrorException } from '@nestjs/common'
 import { Discovery } from '@nest-micro/discovery'
 import { Loadbalancer } from './loadbalancer'
 import { LoadbalanceConfig } from './loadbalance.config'
@@ -30,7 +30,7 @@ export class Loadbalance implements OnApplicationBootstrap {
   choose(serviceName: string) {
     const loadbalancer = this.loadbalancers.get(serviceName)
     if (!loadbalancer) {
-      throw new Error(`The service ${serviceName} is not exist`)
+      throw new InternalServerErrorException(`The service ${serviceName} is not exist`)
     }
     return loadbalancer.choose()
   }
@@ -38,7 +38,7 @@ export class Loadbalance implements OnApplicationBootstrap {
   getLoadbalancer(serviceName: string): Loadbalancer {
     const loadbalancer = this.loadbalancers.get(serviceName)
     if (!loadbalancer) {
-      throw new Error(`The service ${serviceName} is not exist`)
+      throw new InternalServerErrorException(`The service ${serviceName} is not exist`)
     }
     return loadbalancer
   }
@@ -69,7 +69,7 @@ export class Loadbalance implements OnApplicationBootstrap {
     const ruleName = this.loadbalanceConfig.getRule(serviceName)
     const rule = this.loadbalanceRuleRegistry.getRule(ruleName)
     if (!rule) {
-      throw new Error(`The rule ${ruleName} is not exist`)
+      throw new InternalServerErrorException(`The rule ${ruleName} is not exist`)
     }
     const loadbalancer = new Loadbalancer(serviceName, servers, rule)
     this.loadbalancers.set(serviceName, loadbalancer)
