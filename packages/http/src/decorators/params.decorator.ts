@@ -6,20 +6,20 @@ import {
   PARAMETER_HEADER_METADATA,
 } from '../http.constants'
 
-export const Body = (field: string): ParameterDecorator => {
-  return createParameterDecorator(PARAMETER_BODY_METADATA)(field)
+export const Body = (field?: string): ParameterDecorator => {
+  return createParameterDecorator(PARAMETER_BODY_METADATA)(field!)
 }
 
-export const Query = (field: string): ParameterDecorator => {
-  return createParameterDecorator(PARAMETER_QUERY_METADATA)(field)
+export const Query = (field?: string): ParameterDecorator => {
+  return createParameterDecorator(PARAMETER_QUERY_METADATA)(field!)
 }
 
-export const Param = (field: string): ParameterDecorator => {
-  return createParameterDecorator(PARAMETER_PARAM_METADATA)(field)
+export const Param = (field?: string): ParameterDecorator => {
+  return createParameterDecorator(PARAMETER_PARAM_METADATA)(field!)
 }
 
-export const Header = (field: string): ParameterDecorator => {
-  return createParameterDecorator(PARAMETER_HEADER_METADATA)(field)
+export const Header = (field?: string): ParameterDecorator => {
+  return createParameterDecorator(PARAMETER_HEADER_METADATA)(field!)
 }
 
 export const SetBody = (field: string, value: any): MethodDecorator => {
