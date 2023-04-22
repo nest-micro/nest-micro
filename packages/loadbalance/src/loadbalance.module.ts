@@ -33,7 +33,7 @@ export class LoadbalanceModule {
       async useFactory(...params: any[]) {
         const config = params[dependencies.indexOf(CONFIG)]
         const configOptions = config?.get(CONFIG_PREFIX)
-        const factoryOptions = await options.useFactory?.(params.slice(dependencies.length))
+        const factoryOptions = await options.useFactory?.(...params.slice(dependencies.length))
         const assignOptions = assign({}, configOptions, factoryOptions)
         config?.store.set(CONFIG_PREFIX, assignOptions)
         return assignOptions
