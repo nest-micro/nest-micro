@@ -11,3 +11,13 @@ export * from './decorators/use-adapters.decorator'
 export * from './decorators/use-interceptors.decorator'
 export * from './decorators/register-adapter.decorator'
 export * from './decorators/register-interceptor.decorator'
+
+export {
+  Axios,
+  AxiosError,
+  AxiosInstance,
+  AxiosStatic,
+  AxiosAdapter,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios'

@@ -1,25 +1,31 @@
 import { Injectable } from '@nestjs/common'
-import { HttpInterceptor, RegisterInterceptor } from '@nest-micro/http'
+import {
+  HttpInterceptor,
+  RegisterInterceptor,
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from '@nest-micro/http'
 
 @Injectable()
 @RegisterInterceptor()
 export class Log1Interceptor implements HttpInterceptor {
-  onRequest(request: any): any {
+  onRequest(request: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
     console.log('Log1Interceptor onRequest')
     return request
   }
 
-  onRequestError(error: any): any {
+  onRequestError(error: AxiosError): any {
     console.log('Log1Interceptor onRequestError')
     return Promise.reject(error)
   }
 
-  onResponse(response: any): any {
+  onResponse(response: AxiosResponse): any {
     console.log('Log1Interceptor onResponse')
     return response
   }
 
-  onResponseError(error: any): any {
+  onResponseError(error: AxiosError): any {
     console.log('Log1Interceptor onResponseError')
     return Promise.reject(error)
   }
