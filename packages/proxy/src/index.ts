@@ -8,5 +8,4 @@ export * from './interfaces/filter.interface'
 export * from './interfaces/request.interface'
 export * from './interfaces/response.interface'
 
-// export * from './decorators/use-filters.decorator'
 export * from './decorators/register-filter.decorator'
