@@ -11,6 +11,7 @@
     "commit": "npx git-cz",
     "dev:tsc": "pnpm build:tsc --watch",
     "build:tsc": "tsc -b tsconfig.build.json",
+    "clean:all": "rimraf packages/*/lib packages/*/*.tsbuildinfo",
     "lint:lint-staged": "lint-staged",
     "lint:eslint": "eslint --fix --cache \"**/*.{js,jsx,ts,tsx}\"",
     "docker:rm": "docker-compose -p nest-micro-docker -f docker/docker-compose.yaml rm",
@@ -32,6 +33,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^5.0.0",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
