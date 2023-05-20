@@ -110,9 +110,11 @@ export class ApiController {
 
 ### 过滤器
 
+过滤器用于控制代理请求对象和响应对象的修改以及各种逻辑上校验。
+
 代理模块内置了几种常用的过滤器，可在路由过滤器配置中使用它们。
 
-**RequestPathFilter**
+#### RequestPathFilter
 
 代理路径过滤器。参数 `strip` 删除几级路径，参数 `prefix` 添加路径前缀。
 
@@ -128,7 +130,7 @@ proxy:
             prefix: users # http://localhost:3000/api/github/haiweilian => https://api.github.com/users/haiweilian
 ```
 
-**RequestHeaderFilter**
+#### RequestHeaderFilter
 
 代理请求头过滤器。所有参数将添加到请求头中。
 
@@ -143,7 +145,7 @@ proxy:
             authorization: Request dGVzdDp0ZXN0
 ```
 
-**ResponseHeaderFilter**
+#### ResponseHeaderFilter
 
 代理响应头过滤器。所有参数将添加到响应头中。
 
@@ -170,6 +172,22 @@ import { ClientRequest, IncomingMessage } from 'http'
 @Injectable()
 @RegisterFilter()
 export class LogWebFilter implements ProxyFilter {
+  /**
+   * 名称
+   * @default 类名称
+   */
+  // name?: string
+
+  /**
+   * 顺序
+   * @default 配置顺序
+   */
+  // order?: number
+
+  /**
+   * 如果是全局过滤器则立刻生效，非全局过滤器需要在路由过滤器配置中使用它。
+   * @default false
+   */
   public global = true
 
   async before(request: Request, response: Response) {
@@ -203,8 +221,6 @@ import { Module } from '@nestjs/common'
 })
 export class AppModule {}
 ```
-
-如果是全局过滤器则立刻生效，非全局过滤器需要在路径过滤器配置中使用它。
 
 ### 负载均衡
 

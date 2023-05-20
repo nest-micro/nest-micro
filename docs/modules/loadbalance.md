@@ -98,6 +98,30 @@ export class AppService implements OnModuleInit {
 }
 ```
 
+### 规则
+
+规则是具体的负载均衡算法。
+
+模块内置了几种常用的规则，如果配置中不指定则默认是 `RandomRule` 随机规则。
+
+#### RandomRule
+
+通过随机数生成算法选取一个服务器。
+
+```yaml
+loadbalance:
+  rule: RandomRule
+```
+
+#### RoundRobinRule
+
+轮询算法按顺序把每个新的连接请求分配给下一个服务器。
+
+```yaml
+loadbalance:
+  rule: RoundRobinRule
+```
+
 ### 自定义规则
 
 自定义规则需要实现 `LoadbalanceRule` 接口，并添加 `@RegisterRule` 装饰器声明此类为负载均衡规则。如下是一个永远选择第一个服务实例的例子。
@@ -147,10 +171,7 @@ export class AppModule {}
 
 ```yaml
 loadbalance:
-  rule: RandomRule
-  services:
-    - name: app2
-      rule: FirstRule
+  rule: FirstRule
 ```
 
 ## API

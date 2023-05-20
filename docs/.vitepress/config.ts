@@ -19,7 +19,6 @@ export default defineConfig({
         text: '指南',
         items: [
           { text: '介绍', link: '/introduction' },
-          { text: '模块总览', link: '/relation' },
           { text: '贡献指南', link: '/contribution' },
         ],
       },
