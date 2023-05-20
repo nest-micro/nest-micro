@@ -1,10 +1,11 @@
 export const BRAKES = Symbol('BRAKES')
 export const CONFIG = Symbol('CONFIG')
-export const CONFIG_NACOS = Symbol('CONFIG_NACOS')
 export const DISCOVERY = Symbol('DISCOVERY')
-export const DISCOVERY_NACOS = Symbol('DISCOVERY_NACOS')
 export const HTTP = Symbol('HTTP')
 export const LOADBALANCE = Symbol('LOADBALANCE')
 export const PROXY = Symbol('PROXY')
+
+export const NACOS_CONFIG = Symbol('NACOS_CONFIG')
+export const NACOS_DISCOVERY = Symbol('NACOS_DISCOVERY')
 
 export const GUARDS_METADATA = '__guards__'

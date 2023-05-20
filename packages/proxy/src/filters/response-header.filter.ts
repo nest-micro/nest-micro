@@ -6,6 +6,9 @@ import { ProxyFilter } from '../interfaces/filter.interface'
 import { Request } from '../interfaces/request.interface'
 import { Response } from '../interfaces/response.interface'
 
+/**
+ * 响应头过滤器
+ */
 @Injectable()
 @RegisterFilter()
 export class ResponseHeaderFilter implements ProxyFilter {

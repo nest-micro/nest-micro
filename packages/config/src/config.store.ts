@@ -2,6 +2,9 @@ import { get, set, toPairs, mergeWith, assign, isString, isArray, isObject } fro
 import { compile } from 'handlebars'
 import { Injectable } from '@nestjs/common'
 
+/**
+ * 配置结果存储
+ */
 @Injectable()
 export class ConfigStore {
   private _data: any

@@ -42,9 +42,8 @@ export class HttpExplorer implements OnModuleInit {
 
     const paramsMetadata = this.accessor.getParams(target)
     const responseField = this.accessor.getResponse(dependency, target)
-    const loadbalanceService = this.accessor.getLoadbalanceService(dependency)
-    const AdaptersRefs = this.accessor.getAdapterRefs(dependency, target)
-    const InterceptorRefs = this.accessor.getInterceptorRefs(dependency, target)
+    const interceptorRefs = this.accessor.getInterceptorRefs(dependency, target)
+    const loadbalanceService = this.accessor.getLoadbalanceService(dependency, target)
 
     this.orchestrator.addDecoratorRequests({
       instance,
@@ -52,9 +51,8 @@ export class HttpExplorer implements OnModuleInit {
       options,
       paramsMetadata,
       responseField,
+      interceptorRefs,
       loadbalanceService,
-      AdaptersRefs,
-      InterceptorRefs,
     })
   }
 

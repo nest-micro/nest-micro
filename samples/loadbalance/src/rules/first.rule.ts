@@ -5,14 +5,9 @@ import { Loadbalancer, LoadbalanceRule, RegisterRule } from '@nest-micro/loadbal
 @RegisterRule()
 export class FirstRule implements LoadbalanceRule {
   // public name = 'CustomNameRule'
-  private loadbalancer!: Loadbalancer
 
-  init(loadbalancer: Loadbalancer) {
-    this.loadbalancer = loadbalancer
-  }
-
-  choose() {
-    const reachableServers = this.loadbalancer.servers.filter((s) => s.status !== false)
+  choose(loadbalancer: Loadbalancer) {
+    const reachableServers = loadbalancer.servers
     const reachableServersCount = reachableServers.length
 
     if (reachableServersCount === 0) {

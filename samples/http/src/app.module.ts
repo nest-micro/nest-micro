@@ -19,6 +19,11 @@ import { Log1Interceptor } from './interceptors/log1.interceptor'
     LoadbalanceModule.forRootAsync({
       dependencies: [CONFIG],
     }),
+    // HttpModule.forRoot({
+    //   axios: {
+    //     timeout: 1000,
+    //   },
+    // }),
     HttpModule.forRootAsync({
       dependencies: [CONFIG],
     }),

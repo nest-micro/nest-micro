@@ -6,6 +6,9 @@ import { mergeWith, isArray } from 'lodash'
 import { ConfigOptions } from './config.interface'
 import { CONFIG_OPTIONS } from './config.constants'
 
+/**
+ * 加载配置文件
+ */
 @Injectable()
 export class ConfigLoader {
   private readonly files: string[]

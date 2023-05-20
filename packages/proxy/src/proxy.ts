@@ -24,11 +24,18 @@ export class Proxy implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    await this.useLb()
     this.initRoutes()
     this.initProxyServer()
+    await this.useLoadbalance()
   }
 
+  /**
+   * 转发
+   * @param req 请求对象
+   * @param res 响应对象
+   * @param id 路由配置列表中的标识
+   * @returns Promise<void>
+   */
   async forward(req: Request, res: Response, id: string) {
     const route = this.routeRegistry.getRoute(id)
     if (!route) {
@@ -42,10 +49,9 @@ export class Proxy implements OnApplicationBootstrap {
     }
   }
 
-  private async useLb() {
-    this.loadbalance = (await this.scanner.providers((provider) => provider.name === LOADBALANCE))[0]?.instance
-  }
-
+  /**
+   * 初始化路由配置
+   */
   private initRoutes() {
     const routes: Route[] = this.config.getRoutes()
     routes.forEach((route) => {
@@ -56,6 +62,9 @@ export class Proxy implements OnApplicationBootstrap {
     })
   }
 
+  /**
+   * 初始化代理服务
+   */
   private initProxyServer() {
     this.proxy = HttpProxy.createProxyServer(this.config.getExtras())
 
@@ -115,6 +124,19 @@ export class Proxy implements OnApplicationBootstrap {
     })
   }
 
+  /**
+   * 初始化负载均衡模块
+   */
+  private async useLoadbalance() {
+    this.loadbalance = (await this.scanner.providers((provider) => provider.name === LOADBALANCE))[0]?.instance
+  }
+
+  /**
+   * 转发基础请求
+   * @param req 请求对象
+   * @param res 响应对象
+   * @param route 路由信息
+   */
   private async forwardRequest(req: Request, res: Response, route: Route) {
     req.proxy = {
       id: route.id,
@@ -135,6 +157,12 @@ export class Proxy implements OnApplicationBootstrap {
     })
   }
 
+  /**
+   * 转发负载均衡请求
+   * @param req 请求对象
+   * @param res 响应对象
+   * @param route 路由信息
+   */
   private async forwardLbRequest(req: Request, res: Response, route: Route) {
     const service = route.uri.replace('lb://', '')
     if (!this.loadbalance) {
@@ -168,6 +196,11 @@ export class Proxy implements OnApplicationBootstrap {
     })
   }
 
+  /**
+   * 执行转发前过滤器
+   * @param req 请求对象
+   * @param res 路由信息
+   */
   private async processBeforeFilter(req: Request, res: Response) {
     const filters = this.filterRegistry.getRouteFilters(get(req.proxy, 'id')!)
     for (const [routeFilter, proxyFilter] of filters) {

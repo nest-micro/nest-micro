@@ -16,9 +16,8 @@ interface DecoratorRequest {
   options: AxiosRequestConfig
   paramsMetadata: ParamsMetadata
   responseField: string
+  interceptorRefs: Function[]
   loadbalanceService: string
-  AdaptersRefs: Function[]
-  InterceptorRefs: Function[]
 }
 
 @Injectable()
@@ -51,20 +50,20 @@ export class HttpOrchestrator {
         options,
         paramsMetadata,
         responseField,
+        interceptorRefs,
         loadbalanceService,
-        // AdaptersRefs,
-        InterceptorRefs,
+        // ...
       } = decoratorRequest
 
       const globalInterceptors = this.globalInterceptorRefs as HttpInterceptor[]
-      const scopeInterceptors = await this.scanner.injectablesInstanceWithDependencys<HttpInterceptor>(InterceptorRefs)
+      const scopeInterceptors = await this.scanner.injectablesInstanceWithDependencys<HttpInterceptor>(interceptorRefs)
+      const interceptors = [...globalInterceptors, ...scopeInterceptors]
 
       const http = this.http.create(this.options)
+      http.useInterceptors(...interceptors)
       http.useBrakes(brakes)
       http.useLoadbalance(loadbalance, loadbalanceService)
-      http.useInterceptors(...globalInterceptors, ...scopeInterceptors)
 
-      // 重写实例方法，真正调用的是此函数
       // @ts-expect-error
       instance[methodName] = async (...params: any[]) => {
         const requestParams = getRequestParams(paramsMetadata, params)

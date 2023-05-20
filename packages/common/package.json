@@ -4,8 +4,5 @@
   "license": "MIT",
   "author": "haiweilian <haiweilian@foxmail.com>",
   "homepage": "https://github.com/nest-micro/nest-micro",
-  "main": "./lib/index.js",
-  "dependencies": {
-    "@golevelup/nestjs-discovery": "^3.0.0"
-  }
+  "main": "./lib/index.js"
 }

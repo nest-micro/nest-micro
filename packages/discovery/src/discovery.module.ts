@@ -3,7 +3,7 @@ import { Module, DynamicModule, Global, Provider } from '@nestjs/common'
 import { CONFIG, DISCOVERY } from '@nest-micro/common'
 import { CONFIG_PREFIX, DISCOVERY_OPTIONS } from './discovery.constants'
 import { DiscoveryOptions, DiscoveryAsyncOptions } from './discovery.interface'
-import { Discovery } from './discovery'
+import { DiscoveryClient } from './discovery-client'
 
 @Global()
 @Module({})
@@ -37,13 +37,13 @@ export class DiscoveryModule {
 
     const DiscoveryExisting: Provider = {
       provide: DISCOVERY,
-      useExisting: Discovery,
+      useExisting: DiscoveryClient,
     }
 
     return {
       module: DiscoveryModule,
-      providers: [OptionsProvider, Discovery, DiscoveryExisting],
-      exports: [Discovery, DiscoveryExisting],
+      providers: [OptionsProvider, DiscoveryClient, DiscoveryExisting],
+      exports: [DiscoveryClient, DiscoveryExisting],
     }
   }
 }

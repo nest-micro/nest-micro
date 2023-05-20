@@ -1,5 +1,5 @@
 import { Injectable, OnApplicationBootstrap, InternalServerErrorException } from '@nestjs/common'
-import { Discovery } from '@nest-micro/discovery'
+import { DiscoveryClient } from '@nest-micro/discovery'
 import { Loadbalancer } from './loadbalancer'
 import { LoadbalanceConfig } from './loadbalance.config'
 import { LoadbalanceRuleRegistry } from './loadbalance-rule.registry'
@@ -10,7 +10,7 @@ export class Loadbalance implements OnApplicationBootstrap {
   private readonly watcher = new Map<string, Function>()
 
   constructor(
-    private readonly discovery: Discovery,
+    private readonly discoveryClient: DiscoveryClient,
     private readonly loadbalanceConfig: LoadbalanceConfig,
     private readonly loadbalanceRuleRegistry: LoadbalanceRuleRegistry
   ) {}
@@ -19,14 +19,19 @@ export class Loadbalance implements OnApplicationBootstrap {
     await this.init()
   }
 
-  async init() {
-    const services: string[] = this.discovery.getServiceNames()
+  private async init() {
+    const services: string[] = this.discoveryClient.getServiceNames()
     await this.updateServices(services)
-    this.discovery.watchServices(async (services: string[]) => {
+    this.discoveryClient.watchServices(async (services: string[]) => {
       await this.updateServices(services)
     })
   }
 
+  /**
+   * 根据服务名称选择服务实例
+   * @param serviceName 服务名称
+   * @returns LoadbalanceServer
+   */
   choose(serviceName: string) {
     const loadbalancer = this.loadbalancers.get(serviceName)
     if (!loadbalancer) {
@@ -35,6 +40,11 @@ export class Loadbalance implements OnApplicationBootstrap {
     return loadbalancer.choose()
   }
 
+  /**
+   * 根据服务名称获取负载实例
+   * @param serviceName 服务名称
+   * @returns LoadbalanceServer
+   */
   getLoadbalancer(serviceName: string): Loadbalancer {
     const loadbalancer = this.loadbalancers.get(serviceName)
     if (!loadbalancer) {
@@ -58,14 +68,14 @@ export class Loadbalance implements OnApplicationBootstrap {
   }
 
   private createServiceWatcher(serviceName: string) {
-    const unWatch = this.discovery.watch(serviceName, () => {
+    const unWatch = this.discoveryClient.watch(serviceName, () => {
       this.createLoadbalancer(serviceName)
     })
     this.watcher.set(serviceName, unWatch)
   }
 
   private createLoadbalancer(serviceName: string) {
-    const servers = this.discovery.getServiceServers(serviceName)
+    const servers = this.discoveryClient.getServiceServers(serviceName)
     const ruleName = this.loadbalanceConfig.getRule(serviceName)
     const rule = this.loadbalanceRuleRegistry.getRule(ruleName)
     if (!rule) {

@@ -1,7 +1,6 @@
 http:
   axios:
     timeout: 1000
-    baseURL: http://127.0.0.1:3000
 
 discovery:
   services:

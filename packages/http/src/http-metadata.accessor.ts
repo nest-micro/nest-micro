@@ -8,7 +8,6 @@ import {
   REQUEST_OPTIONS_METADATA,
   PARAMETER_METADATA,
   RESPONSE_METADATA,
-  ADAPTER_METADATA,
   INTERCEPTOR_METADATA,
   LOADBALANCE_SERVICE,
 } from './http.constants'
@@ -37,15 +36,11 @@ export class HttpMetadataAccessor {
     return this.reflector.getAllAndOverride(RESPONSE_METADATA, [dependency, target])
   }
 
-  getAdapterRefs(dependency: Function, target: Function): Function[] {
-    return this.reflector.getAllAndMerge(ADAPTER_METADATA, [dependency, target])
-  }
-
   getInterceptorRefs(dependency: Function, target: Function): Function[] {
     return this.reflector.getAllAndMerge(INTERCEPTOR_METADATA, [dependency, target])
   }
 
-  getLoadbalanceService(dependency: Function) {
-    return this.reflector.get(LOADBALANCE_SERVICE, dependency)
+  getLoadbalanceService(dependency: Function, target: Function) {
+    return this.reflector.getAllAndOverride(LOADBALANCE_SERVICE, [dependency, target])
   }
 }

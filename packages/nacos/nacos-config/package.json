@@ -1,0 +1,12 @@
+{
+  "name": "@nest-micro/nacos-config",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "haiweilian <haiweilian@foxmail.com>",
+  "homepage": "https://github.com/nest-micro/nest-micro",
+  "main": "./lib/index.js",
+  "dependencies": {
+    "nacos": "^2.5.1",
+    "yaml": "^2.2.1"
+  }
+}

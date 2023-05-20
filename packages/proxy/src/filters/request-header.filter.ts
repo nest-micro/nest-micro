@@ -5,6 +5,9 @@ import { RegisterFilter } from '../decorators/register-filter.decorator'
 import { ProxyFilter } from '../interfaces/filter.interface'
 import { Request } from '../interfaces/request.interface'
 
+/**
+ * 内置请求头过滤器
+ */
 @Injectable()
 @RegisterFilter()
 export class RequestHeaderFilter implements ProxyFilter {

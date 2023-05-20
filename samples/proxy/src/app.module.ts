@@ -19,7 +19,22 @@ import { LogWebFilter } from './filters/log-web.filter'
       dependencies: [CONFIG],
     }),
     // ProxyModule.forRoot({
+    //   extras: {
+    //     timeout: 60000,
+    //   },
     //   routes: [
+    //     {
+    //       id: 'github',
+    //       uri: 'https://api.github.com',
+    //       filters: [
+    //         {
+    //           name: 'RequestPathFilter',
+    //           parameters: {
+    //             strip: 2,
+    //           },
+    //         },
+    //       ],
+    //     },
     //     {
     //       id: 'app1',
     //       uri: 'http://127.0.0.1:3000',
@@ -71,7 +86,6 @@ import { LogWebFilter } from './filters/log-web.filter'
     //       ],
     //     },
     //   ],
-    //   extras: {},
     // }),
     ProxyModule.forRootAsync({
       dependencies: [CONFIG],
