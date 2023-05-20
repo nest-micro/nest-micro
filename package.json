@@ -11,22 +11,25 @@
     "commit": "npx git-cz",
     "dev:tsc": "pnpm build:tsc --watch",
     "build:tsc": "tsc -b tsconfig.build.json",
-    "clean:all": "rimraf packages/*/lib packages/*/*.tsbuildinfo",
+    "clean:all": "rimraf packages/**/lib packages/**/*.tsbuildinfo",
     "lint:lint-staged": "lint-staged",
     "lint:eslint": "eslint --fix --cache \"**/*.{js,jsx,ts,tsx}\"",
     "docker:rm": "docker-compose -p nest-micro-docker -f docker/docker-compose.yaml rm",
     "docker:stop": "docker-compose -p nest-micro-docker -f docker/docker-compose.yaml stop",
-    "docker:base": "docker-compose -p nest-micro-docker -f docker/docker-compose.yaml up -d nest-micro-mysql nest-micro-nacos"
+    "docker:base": "docker-compose -p nest-micro-docker -f docker/docker-compose.yaml up -d nest-micro-mysql nest-micro-nacos",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@nest-micro/brakes": "workspace:*",
     "@nest-micro/common": "workspace:*",
     "@nest-micro/config": "workspace:*",
-    "@nest-micro/config-nacos": "workspace:*",
     "@nest-micro/discovery": "workspace:*",
-    "@nest-micro/discovery-nacos": "workspace:*",
     "@nest-micro/http": "workspace:*",
     "@nest-micro/loadbalance": "workspace:*",
+    "@nest-micro/nacos-config": "workspace:*",
+    "@nest-micro/nacos-discovery": "workspace:*",
     "@nest-micro/proxy": "workspace:*",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
@@ -52,6 +55,14 @@
     "lint-staged": "^12.3.7",
     "prettier": "^2.6.0",
     "rimraf": "^5.0.0",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vitepress": "1.0.0-alpha.75"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search"
+      ]
+    }
   }
 }

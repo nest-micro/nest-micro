@@ -3,13 +3,13 @@
   "references": [
     { "path": "./packages/common/tsconfig.build.json" },
     { "path": "./packages/config/tsconfig.build.json" },
-    { "path": "./packages/config-nacos/tsconfig.build.json" },
     { "path": "./packages/discovery/tsconfig.build.json" },
-    { "path": "./packages/discovery-nacos/tsconfig.build.json" },
     { "path": "./packages/loadbalance/tsconfig.build.json" },
     { "path": "./packages/http/tsconfig.build.json" },
     { "path": "./packages/proxy/tsconfig.build.json" },
-    { "path": "./packages/brakes/tsconfig.build.json" }
+    { "path": "./packages/brakes/tsconfig.build.json" },
+    { "path": "./packages/nacos/nacos-config/tsconfig.build.json" },
+    { "path": "./packages/nacos/nacos-discovery/tsconfig.build.json" }
   ],
   "files": []
 }
