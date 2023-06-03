@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   base: '/nest-micro/',
   title: 'Nest Micro',
-  description: '基于 NestJS 的微服务解决方案',
+  description: '基于 NestJS 构建微服务系统的常用的工具',
   markdown: {
     lineNumbers: true,
   },

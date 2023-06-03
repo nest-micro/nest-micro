@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: Nest Micro
-  tagline: 基于 NestJS 的微服务解决方案
+  tagline: 基于 NestJS 构建微服务系统的常用的工具
   actions:
     - theme: brand
       text: 快速开始
